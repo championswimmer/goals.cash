@@ -16,7 +16,7 @@ export default class Asset implements Plottable {
     this.growthRate = growthRate;
   }
 
-  generateYearlyData(startYear: number, endYear: number): number[] {
+  generateYearlyData(startYear: number, endYear: number): Map<string, number> {
     throw new Error("Method not implemented.");
   }
 

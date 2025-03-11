@@ -7,5 +7,5 @@ export interface Plottable {
   name: string;
   startYear: number;
   endYear: number;
-  generateYearlyData(startYear: number, endYear: number): number[];
+  generateYearlyData(startYear: number, endYear: number): Map<string, number>;
 }
