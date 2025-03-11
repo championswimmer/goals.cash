@@ -1,13 +1,13 @@
-import { MoneyStream, Plottable } from './Portfolio';
+import { MoneyStream, Plottable } from './types';
 
-export class IncomeStream implements MoneyStream, Plottable {
+export default class IncomeStream implements MoneyStream, Plottable {
     name: string;
     startYear: number;
     endYear: number;
     amountPerYear: number;
     growthRate: number;
 
-    private constructor(name: string, startYear: number, endYear: number, amountPerYear: number, growthRate: number) {
+    constructor(name: string, startYear: number, endYear: number, amountPerYear: number, growthRate: number) {
         this.name = name;
         this.startYear = startYear;
         this.endYear = endYear;

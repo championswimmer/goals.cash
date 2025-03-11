@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",

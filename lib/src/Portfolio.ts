@@ -1,21 +1,14 @@
-export interface MoneyStream {
-    startYear: number;
-    endYear: number;
-    amountPerYear: number; // this is at startYear, signed value
-    growthRate: number; // in percentage
-}
-
-export interface Plottable {
-    name: string;
-    generateYearlyData(startYear: number, endYear: number): number[];
-}
-
+import IncomeStream from "./IncomeStream";
+import ExpenseStream from "./ExpenseStream";
 export class Portfolio {
     startYear!: number;
     endYear!: number;
     currentYear!: number;
     userAge!: number;
     allowNegative!: boolean;
+    incomeStreams: IncomeStream[] = [];
+    expenseStreams: ExpenseStream[] = [];
+    
 
     private constructor(startYear: number, endYear: number, currentYear: number, userAge: number, allowNegative: boolean) {
         this.startYear = startYear;
