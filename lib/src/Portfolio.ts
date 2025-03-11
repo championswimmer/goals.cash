@@ -4,7 +4,7 @@ import Asset from "./Asset";
 import MajorExpense from "./MajorExpense";
 
 
-export class Portfolio {
+export default class Portfolio {
   startYear!: number;
   endYear!: number;
   currentYear!: number;
@@ -15,7 +15,7 @@ export class Portfolio {
   assets: Asset[] = [];
   majorExpenses: MajorExpense[] = [];
 
-  private constructor(startYear: number, endYear: number, currentYear: number, userAge: number, allowNegative: boolean) {
+  constructor(startYear: number, endYear: number, currentYear: number, userAge: number, allowNegative: boolean) {
     this.startYear = startYear;
     this.endYear = endYear;
     this.currentYear = currentYear;

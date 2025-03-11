@@ -1,7 +1,8 @@
 {
   "name": "@goalscash/lib",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "dist",
+  "types": "dist",
   "scripts": {
     "build": "tsc",
     "test": "jest"

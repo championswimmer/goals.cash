@@ -1,0 +1,19 @@
+{
+    "name": "@goalscash/chartjs-sample",
+    "version": "0.0.1",
+    "scripts": {
+        "build": "parcel build src/index.html",
+        "start": "parcel src/index.html"
+    },
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@goalscash/lib": "../lib",
+        "chartjs": "^0.3.24"
+    },
+    "devDependencies": {
+        "@types/chartjs": "^0.0.31",
+        "parcel": "^2.13.3"
+    }
+}

@@ -3,8 +3,13 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
+    "install:lib": "cd lib && npm install",
+    "install:chartjs-sample": "cd chartjs-sample && npm install",
+    "postinstall": "run-s install:*",
     "build:lib": "cd lib && npm run build",
+    "build:chartjs-sample": "cd chartjs-sample && npm run build",
     "build": "run-s build:*",
+    "start:chartjs-sample": "cd chartjs-sample && npm start",
     "test:lib": "cd lib && npm run test",
     "test": "run-s test:*"
   },
