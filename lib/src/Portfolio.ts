@@ -48,4 +48,28 @@ export default class Portfolio {
   addMajorExpense(majorExpense: MajorExpense) {
     this.majorExpenses.push(majorExpense);
   }
+  /**
+   * Returns a map of year to amount for all income streams, expense streams, and assets
+   * <code>
+   * [
+   *  { name: 'Income', data: { 2015: 1000, 2016: 2000, ... } },
+   *  { name: 'Expenses', data: { 2015: -500, 2016: -1000, ... } },
+   * ]
+   * </code>
+   */
+  getYearlyData(): YearlyPlottable[] {
+    const yearlyData: YearlyPlottable[] = [];
+    const allPlottables = [...this.incomeStreams, ...this.expenseStreams, ...this.assets, ...this.majorExpenses];
+    for (const plottable of allPlottables) {
+      const plottableYearlyData = plottable.generateYearlyData(this.startYear, this.endYear);
+      const data: { [year: string]: number } = {};
+      for (const year of plottableYearlyData.keys()) {
+        data[year] = plottableYearlyData.get(year) ?? 0;
+      }
+      yearlyData.push({ name: plottable.name, data });
+    }
+    return yearlyData;
+  }
 }
+
+type YearlyPlottable = { name: string, data: { [year: string]: number } }
