@@ -1,7 +1,7 @@
 import { Plottable, MoneyStream, PlotType } from "./types";
 
 
-export default class ExpenseStream implements MoneyStream, Plottable {
+export default class ExpenseStream implements MoneyStream {
   plotType: PlotType = "bar";
   name: string;
   startYear: number;
@@ -19,15 +19,18 @@ export default class ExpenseStream implements MoneyStream, Plottable {
 
   generateYearlyData(startYear: number, endYear: number): Map<string, number> {
     let yearlyData = new Map<string, number>();
-    let amount = this.amountPerYear;
     for (let year = startYear; year <= endYear; year++) {
-      if (year < this.startYear || year > this.endYear) {
-        yearlyData.set(year.toString(), 0);
-      } else {
-        yearlyData.set(year.toString(), amount);
-        amount *= (1 + this.growthRate / 100);
-      }
+      yearlyData.set(year.toString(), this.getAmountForYear(year));
     }
     return yearlyData;
+  }
+
+  // TODO: @championswimmer - same code as in IncomeStream //merge
+  getAmountForYear(year: number): number {
+    if (year < this.startYear || year > this.endYear) {
+      return 0;
+    } else {
+      return this.amountPerYear * Math.pow(1 + this.growthRate / 100, year - this.startYear);
+    }
   }
 }
