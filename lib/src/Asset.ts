@@ -1,8 +1,9 @@
 import Portfolio from "./Portfolio";
-import { Plottable } from "./types";
+import { Plottable, PlotType } from "./types";
 
 
 export default class Asset implements Plottable {
+  plotType: PlotType = "line";
   name: string;
   startYear: number;
   endYear: number;

@@ -2,6 +2,7 @@ import IncomeStream from "./IncomeStream";
 import ExpenseStream from "./ExpenseStream";
 import Asset from "./Asset";
 import MajorExpense from "./MajorExpense";
+import { PlotType } from "./types";
 
 
 export default class Portfolio {
@@ -66,10 +67,13 @@ export default class Portfolio {
       for (const year of plottableYearlyData.keys()) {
         data[year] = plottableYearlyData.get(year) ?? 0;
       }
-      yearlyData.push({ name: plottable.name, data });
+      yearlyData.push({ name: plottable.name, type: plottable.plotType, data });
     }
     return yearlyData;
   }
 }
-
-type YearlyPlottable = { name: string, data: { [year: string]: number } }
+type YearlyPlottable = { 
+  name: string,
+  type: PlotType
+  data: { [year: string]: number } 
+}

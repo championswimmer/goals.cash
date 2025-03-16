@@ -1,6 +1,7 @@
-import { MoneyStream, Plottable } from './types';
+import { MoneyStream, Plottable, PlotType } from './types';
 
 export default class IncomeStream implements MoneyStream, Plottable {
+  plotType: PlotType = "bar";
   name: string;
   startYear: number;
   endYear: number;

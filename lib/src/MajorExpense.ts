@@ -1,7 +1,9 @@
 import ExpenseStream from "./ExpenseStream";
+import { PlotType } from "./types";
 
 
 export default class MajorExpense extends ExpenseStream {
+  plotType: PlotType = "scatter";
   totalAmount: number;
   isViaLoan: boolean;
   loanInterestRate: number; // 0 if not via loan
