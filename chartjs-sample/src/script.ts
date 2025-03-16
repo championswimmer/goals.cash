@@ -2,6 +2,7 @@ import {
   Asset,
   ExpenseStream,
   IncomeStream,
+  MajorExpense,
   Portfolio,
 } from "@goalscash/lib/src";
 
@@ -17,7 +18,9 @@ const portfolio = new Portfolio(
 
 portfolio.addIncomeStream(new IncomeStream("Salary", 2025, 2045, 180000, 3));
 
-portfolio.addExpenseStream(new ExpenseStream("Rent", 2025, 2050, 12 * -2200, 3));
+portfolio.addExpenseStream(new ExpenseStream("Rent", 2025, 2050, 12 * 2200, 3));
+
+portfolio.addMajorExpense(new MajorExpense("House", 2030, 100000))
 
 portfolio.addAsset(Asset.create(portfolio, "Cash", 2025, 120000, 3));
 
@@ -36,7 +39,7 @@ const portfolioChart = new Chart(ctx, {
     datasets: yearlyData.map((plottable) => ({
       label: plottable.name,
       type: plottable.type,
-      data: Object.values(plottable.data),
+      data: Object.values(plottable.data).map((value) => value * (plottable.name == "Rent" ? -1 : 1)),
     })),
   },
   options: {

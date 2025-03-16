@@ -73,6 +73,7 @@ export default class Portfolio {
   }
 }
 type YearlyPlottable = { 
+  // TODO: @championswimmer - need to pass signal here if this plot is negative (eg: expenses)
   name: string,
   type: PlotType
   data: { [year: string]: number } 

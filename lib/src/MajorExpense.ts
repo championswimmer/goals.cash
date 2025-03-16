@@ -21,14 +21,36 @@ export default class MajorExpense extends ExpenseStream {
   constructor(name: string, year: number, amount: number);
   constructor(name: string, startYear: number, totalAmount: number, isViaLoan: true, loanInterestRate: number, loanTermYears: number, loanDownPayment: number);
   constructor(name: string, startYear: number, totalAmount: number, isViaLoan: boolean = false, loanInterestRate: number = 0, loanTermYears: number = 0, loanDownPayment: number = 0) {
-    const annualPayment = MajorExpense.calculateAnnualPayment(totalAmount, loanInterestRate, loanTermYears, loanDownPayment);
+    const annualPayment = isViaLoan ? MajorExpense.calculateAnnualPayment(totalAmount, loanInterestRate, loanTermYears, loanDownPayment) : totalAmount;
     super(name, startYear, startYear + loanTermYears, annualPayment, 0);
     this.totalAmount = totalAmount;
     this.isViaLoan = isViaLoan;
     this.loanInterestRate = loanInterestRate;
     this.loanTermYears = loanTermYears;
     this.loanDownPayment = loanDownPayment;
+    if (isViaLoan) {
+      this.plotType = "bar"
+    }
   }
 
-  // TODO: override generateYearlyData
+  generateYearlyData(startYear: number, endYear: number): Map<string, number> {
+    let yearlyData = new Map<string, number>();
+    for (let year = startYear; year <= endYear; year++) {
+      yearlyData.set(year.toString(), this.getAmountForYear(year));
+    }
+    return yearlyData;
+  }
+
+  getAmountForYear(year: number): number {
+    if (!this.isViaLoan) {
+      // only 1 payment in the year of startYear
+      if (year === this.startYear) return this.amountPerYear;
+      else return 0;
+    } else {
+      // downPayment + annual payment in the startYear, annual payment for the rest of the years
+      if (year === this.startYear) return this.loanDownPayment + this.amountPerYear;
+      else if (year > this.startYear && year <= this.endYear) return this.amountPerYear;
+      else return 0;
+    }
+  }
 }
