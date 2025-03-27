@@ -1,6 +1,7 @@
 import IncomeStream from "./IncomeStream";
 import ExpenseStream from "./ExpenseStream";
 import Asset from "./Asset";
+import Liability from "./Liability";
 import MajorExpense from "./MajorExpense";
 import { PlotType } from "./types";
 
@@ -14,6 +15,7 @@ export default class Portfolio {
   incomeStreams: IncomeStream[] = [];
   expenseStreams: ExpenseStream[] = [];
   assets: Asset[] = [];
+  liabilities: Liability[] = [];
   majorExpenses: MajorExpense[] = [];
 
   constructor(startYear: number, endYear: number, currentYear: number, userAge: number, allowNegative: boolean) {
@@ -46,6 +48,10 @@ export default class Portfolio {
     this.assets.push(asset);
   }
 
+  addLiability(liability: Liability) {
+    this.liabilities.push(liability);
+  }
+
   addMajorExpense(majorExpense: MajorExpense) {
     this.majorExpenses.push(majorExpense);
   }
@@ -60,15 +66,30 @@ export default class Portfolio {
    */
   getYearlyData(): YearlyPlottable[] {
     const yearlyData: YearlyPlottable[] = [];
-    const allPlottables = [...this.incomeStreams, ...this.expenseStreams, ...this.assets, ...this.majorExpenses];
-    for (const plottable of allPlottables) {
+    const allItems = [
+      ...this.incomeStreams, 
+      ...this.expenseStreams, 
+      ...this.assets, 
+      ...this.liabilities, 
+      ...this.majorExpenses
+    ];
+    
+    for (const item of allItems) {
+      const plottable = item.plot();
       const plottableYearlyData = plottable.generateYearlyData(this.startYear, this.endYear);
       const data: { [year: string]: number } = {};
+      
       for (const year of plottableYearlyData.keys()) {
         data[year] = plottableYearlyData.get(year) ?? 0;
       }
-      yearlyData.push({ name: plottable.name, type: plottable.plotType, data });
+      
+      yearlyData.push({ 
+        name: plottable.name, 
+        type: plottable.plotType, 
+        data 
+      });
     }
+    
     return yearlyData;
   }
 }

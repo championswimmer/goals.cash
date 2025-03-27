@@ -1,7 +1,7 @@
 import { MoneyPool, PlotType, Plottable } from "./types";
 import Portfolio from "./Portfolio";
 
-export default class Asset implements MoneyPool {
+export default class Liability implements MoneyPool {
   name: string;
   startYear: number;
   endYear: number;
@@ -9,18 +9,17 @@ export default class Asset implements MoneyPool {
   currentValue: number;
   growthRate: number;
 
-  // TODO: create from Portfolio (taking start and end year from portfolio)
   private constructor(name: string, startYear: number, endYear: number, currentYear: number, currentValue: number, growthRate: number) {
     this.name = name;
     this.startYear = startYear;
     this.endYear = endYear;
     this.currentYear = currentYear;
-    this.currentValue = currentValue;
+    this.currentValue = currentValue < 0 ? currentValue : -currentValue; // Ensure liability is negative
     this.growthRate = growthRate;
   }
 
   public static create(portfolio: Portfolio, name: string, currentYear: number, currentValue: number, growthRate: number) {
-    return new Asset(name, portfolio.startYear, portfolio.endYear, currentYear, currentValue, growthRate);
+    return new Liability(name, portfolio.startYear, portfolio.endYear, currentYear, currentValue, growthRate);
   }
 
   generateYearlyData(startYear: number, endYear: number): Map<string, number> {
@@ -35,7 +34,7 @@ export default class Asset implements MoneyPool {
       if (year >= this.startYear && year < this.currentYear) {
         amount = this.currentValue * (year - this.startYear) / (this.currentYear - this.startYear);
       }
-      // currentYear:currentValue and grow by growthRate
+      // currentYear:currentValue and "grow" by growthRate (actually shrinking as it's negative)
       if (year >= this.currentYear && year <= this.endYear) {
         amount = this.currentValue * Math.pow(1 + this.growthRate / 100, year - this.currentYear);
       }
@@ -54,4 +53,4 @@ export default class Asset implements MoneyPool {
       generateYearlyData: this.generateYearlyData.bind(this)
     };
   }
-}
+} 

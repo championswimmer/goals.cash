@@ -1,8 +1,6 @@
-import { Plottable, MoneyStream, PlotType } from "./types";
-
+import { MoneyStream, PlotType, Plottable } from "./types";
 
 export default class ExpenseStream implements MoneyStream {
-  plotType: PlotType = "bar";
   name: string;
   startYear: number;
   endYear: number;
@@ -13,7 +11,7 @@ export default class ExpenseStream implements MoneyStream {
     this.name = name;
     this.startYear = startYear;
     this.endYear = endYear;
-    this.amountPerYear = amountPerYear;
+    this.amountPerYear = amountPerYear < 0 ? amountPerYear : -amountPerYear; // Ensure expense is negative
     this.growthRate = growthRate;
   }
 
@@ -32,5 +30,16 @@ export default class ExpenseStream implements MoneyStream {
     } else {
       return this.amountPerYear * Math.pow(1 + this.growthRate / 100, year - this.startYear);
     }
+  }
+
+  plot(): Plottable {
+    const plotType: PlotType = "bar";
+    return {
+      name: this.name,
+      plotType,
+      startYear: this.startYear,
+      endYear: this.endYear,
+      generateYearlyData: this.generateYearlyData.bind(this)
+    };
   }
 }

@@ -1,14 +1,13 @@
 import ExpenseStream from "./ExpenseStream";
-import { PlotType } from "./types";
-
+import { PlotType, Plottable } from "./types";
 
 export default class MajorExpense extends ExpenseStream {
-  plotType: PlotType = "scatter";
   totalAmount: number;
   isViaLoan: boolean;
   loanInterestRate: number; // 0 if not via loan
   loanTermYears: number; // 0 if not via loan
   loanDownPayment: number; // 0 if not via loan
+  private plotTypeOverride: PlotType = "scatter";
 
   public static calculateAnnualPayment(totalAmount: number, loanInterestRate: number, loanTermYears: number, loanDownPayment: number) {
     // TODO: Errors for negative term value, negative interest rate, negative down payment
@@ -22,14 +21,14 @@ export default class MajorExpense extends ExpenseStream {
   constructor(name: string, startYear: number, totalAmount: number, isViaLoan: true, loanInterestRate: number, loanTermYears: number, loanDownPayment: number);
   constructor(name: string, startYear: number, totalAmount: number, isViaLoan: boolean = false, loanInterestRate: number = 0, loanTermYears: number = 0, loanDownPayment: number = 0) {
     const annualPayment = isViaLoan ? MajorExpense.calculateAnnualPayment(totalAmount, loanInterestRate, loanTermYears, loanDownPayment) : totalAmount;
-    super(name, startYear, startYear + loanTermYears, annualPayment, 0);
+    super(name, startYear, startYear + (isViaLoan ? loanTermYears : 0), annualPayment, 0);
     this.totalAmount = totalAmount;
     this.isViaLoan = isViaLoan;
     this.loanInterestRate = loanInterestRate;
     this.loanTermYears = loanTermYears;
     this.loanDownPayment = loanDownPayment;
     if (isViaLoan) {
-      this.plotType = "bar"
+      this.plotTypeOverride = "bar";
     }
   }
 
@@ -52,5 +51,15 @@ export default class MajorExpense extends ExpenseStream {
       else if (year > this.startYear && year <= this.endYear) return this.amountPerYear;
       else return 0;
     }
+  }
+
+  plot(): Plottable {
+    return {
+      name: this.name,
+      plotType: this.plotTypeOverride,
+      startYear: this.startYear,
+      endYear: this.endYear,
+      generateYearlyData: this.generateYearlyData.bind(this)
+    };
   }
 }

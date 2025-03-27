@@ -1,7 +1,6 @@
 import { MoneyStream, Plottable, PlotType } from './types';
 
 export default class IncomeStream implements MoneyStream {
-  plotType: PlotType = "bar";
   name: string;
   startYear: number;
   endYear: number;
@@ -15,6 +14,7 @@ export default class IncomeStream implements MoneyStream {
     this.amountPerYear = amountPerYear;
     this.growthRate = growthRate;
   }
+
   generateYearlyData(startYear: number, endYear: number): Map<string, number> {
     let yearlyData = new Map<string, number>();
     for (let year = startYear; year <= endYear; year++) {
@@ -32,4 +32,14 @@ export default class IncomeStream implements MoneyStream {
     }
   }
 
+  plot(): Plottable {
+    const plotType: PlotType = "bar";
+    return {
+      name: this.name,
+      plotType,
+      startYear: this.startYear,
+      endYear: this.endYear,
+      generateYearlyData: this.generateYearlyData.bind(this)
+    };
+  }
 }
