@@ -1,30 +1,49 @@
-export type PlotType = "line" | "bar" | "scatter";
+
 
 export interface Plottable {
-  name: string;
-  plotType: PlotType;
-  startYear: number;
-  endYear: number;
-  generateYearlyData(startYear: number, endYear: number): Map<string, number>;
+    chartType: "bar" | "line" | "area" | "scatter";
 }
 
-export interface MoneyStream {
-  name: string;
-  startYear: number;
-  endYear: number;
-  amountPerYear: number; // this is at startYear, signed value
-  growthRate: number; // in percentage
-  getAmountForYear(year: number): number;
-  plot(): Plottable;
+export interface MoneyPool extends Plottable {
+    chartType: "area"
+    name: string;
+    // TODO: @championswimmer have color here ? 
+    startYear: number;
+
+    /**
+     * The initial value of the money pool at the startYear 
+     * This is not an "annual" number, but the absolute value
+     * Positive for assets, negative for liabilities
+     */
+    initialValue: number;
+
+    /**
+     * If this pool has an intrinsic rate of growth (eg: due to its own interest)
+     */
+    intrinsicGrowthRate: number;
+    
+    /**
+     * If true, then values from 0 to inital value between portfolio.startYear 
+     * to this.startYear will be generated
+     */
+    extrapolateFromZero: boolean;
 }
 
-export interface MoneyPool {
-  name: string;
-  startYear: number;
-  endYear: number;
-  currentYear: number;
-  currentValue: number;
-  growthRate: number; // in percentage
-  plot(): Plottable;
-}
+export interface MoneyStream extends Plottable {
+    chartType: "bar"
+    name: string;
+    // TODO: @championswimmer have color here ? 
+    startYear: number;
 
+    /**
+     * The initial annual rate of money stream, at the startYear
+     * Positive for incomes, negative for expenses
+     */
+    initialValue: number;
+
+    /**
+     * The rate of growth of the stream itself. (eg increase in salary)
+     */
+    growthRate: number;
+
+}

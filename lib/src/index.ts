@@ -1,7 +1,10 @@
-import Portfolio from "./Portfolio";
-import IncomeStream from "./IncomeStream";
-import ExpenseStream from "./ExpenseStream";
-import Asset from "./Asset";
-import MajorExpense from "./MajorExpense";
+export {
+    MoneyPool,
+    MoneyStream,
+    Plottable,
+} from "./types";
 
-export { Portfolio, IncomeStream, ExpenseStream, Asset, MajorExpense };
+export { IncomeStream } from "./IncomeStream";
+export { ExpenseStream } from "./ExpenseStream";
+export { Asset } from "./Asset"
+export { Liability } from "./Liability"
