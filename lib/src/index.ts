@@ -8,3 +8,4 @@ export { IncomeStream } from "./IncomeStream";
 export { ExpenseStream } from "./ExpenseStream";
 export { Asset } from "./Asset"
 export { Liability } from "./Liability"
+export { Portfolio } from "./Portfolio"

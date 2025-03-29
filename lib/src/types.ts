@@ -8,6 +8,7 @@ export interface MoneyPool extends Plottable {
     chartType: "area"
     name: string;
     // TODO: @championswimmer have color here ? 
+    
     startYear: number;
 
     /**
