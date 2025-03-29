@@ -34,7 +34,9 @@ export interface MoneyStream extends Plottable {
     chartType: "bar"
     name: string;
     // TODO: @championswimmer have color here ? 
+    
     startYear: number;
+    endYear: number;
 
     /**
      * The initial annual rate of money stream, at the startYear
