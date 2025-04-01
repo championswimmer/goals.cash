@@ -1,56 +1,82 @@
-import { MoneyPool, PlotType, Plottable } from "./types";
-import Portfolio from "./Portfolio";
+import { MoneyPool, PlotPoint } from './types';
 
-export default class Liability implements MoneyPool {
+export class Liability implements MoneyPool {
+  type: "pool" = "pool";
+  chart: "area" = "area";
+  poolType: "liabilities" = "liabilities";
+  
   name: string;
-  startYear: number;
-  endYear: number;
-  currentYear: number;
-  currentValue: number;
+  color: string;
+  initYear: number;
+  initValue: number;
   growthRate: number;
-
-  private constructor(name: string, startYear: number, endYear: number, currentYear: number, currentValue: number, growthRate: number) {
+  
+  private _plotPoints: Map<number, number> = new Map();
+  
+  constructor(name: string, color: string, initYear: number, initValue: number, growthRate: number) {
     this.name = name;
-    this.startYear = startYear;
-    this.endYear = endYear;
-    this.currentYear = currentYear;
-    this.currentValue = currentValue < 0 ? currentValue : -currentValue; // Ensure liability is negative
+    this.color = color;
+    this.initYear = initYear;
+    this.initValue = initValue;
     this.growthRate = growthRate;
+    
+    // Initialize the first plot point
+    this._plotPoints.set(initYear, initValue);
   }
-
-  public static create(portfolio: Portfolio, name: string, currentYear: number, currentValue: number, growthRate: number) {
-    return new Liability(name, portfolio.startYear, portfolio.endYear, currentYear, currentValue, growthRate);
-  }
-
-  generateYearlyData(startYear: number, endYear: number): Map<string, number> {
-    let yearlyData = new Map<string, number>();
-    let amount = 0;
+  
+  getPlotPoints(startYear: number, endYear: number): PlotPoint[] {
+    // Ensure we have all the plot points calculated
+    this.calculatePlotPoints(startYear, endYear);
+    
+    const plotPoints: PlotPoint[] = [];
+    
     for (let year = startYear; year <= endYear; year++) {
-      // no values outside of this.startYear to this.endYear
-      if (year < this.startYear || year > this.endYear) {
-        continue;
-      }
-      // extrapolate from startYear:0 to currentYear:currentValue
-      if (year >= this.startYear && year < this.currentYear) {
-        amount = this.currentValue * (year - this.startYear) / (this.currentYear - this.startYear);
-      }
-      // currentYear:currentValue and "grow" by growthRate (actually shrinking as it's negative)
-      if (year >= this.currentYear && year <= this.endYear) {
-        amount = this.currentValue * Math.pow(1 + this.growthRate / 100, year - this.currentYear);
-      }
-      yearlyData.set(year.toString(), amount);
+      plotPoints.push({
+        year,
+        value: this._plotPoints.get(year) || 0
+      });
     }
-    return yearlyData;
+    
+    return plotPoints;
   }
-
-  plot(): Plottable {
-    const plotType: PlotType = "line";
-    return {
-      name: this.name,
-      plotType,
-      startYear: this.startYear,
-      endYear: this.endYear,
-      generateYearlyData: this.generateYearlyData.bind(this)
-    };
+  
+  private calculatePlotPoints(startYear: number, endYear: number) {
+    // Calculate plot points for years before initYear
+    for (let year = this.initYear - 1; year >= startYear; year--) {
+      const nextYearValue = this._plotPoints.get(year + 1) || 0;
+      const thisYearValue = nextYearValue / (1 + this.growthRate);
+      this._plotPoints.set(year, thisYearValue);
+    }
+    
+    // Calculate plot points for years after initYear
+    for (let year = this.initYear + 1; year <= endYear; year++) {
+      const prevYearValue = this._plotPoints.get(year - 1) || 0;
+      const thisYearValue = prevYearValue * (1 + this.growthRate);
+      this._plotPoints.set(year, thisYearValue);
+    }
+  }
+  
+  extrapolateFromStart(startYear: number, startValue: number): MoneyPool {
+    if (startYear > this.initYear) {
+      throw new Error("Start year must be less than or equal to init year");
+    }
+    
+    // If initYear is equal to startYear, just update the value
+    if (startYear === this.initYear) {
+      this.initValue = startValue;
+      this._plotPoints.set(startYear, startValue);
+      return this;
+    }
+    
+    // Calculate the growth factor to adjust the initial value
+    const yearsOfGrowth = this.initYear - startYear;
+    const growthFactor = Math.pow(1 + this.growthRate, yearsOfGrowth);
+    
+    // Update initial value based on the start value and growth
+    this.initValue = startValue * growthFactor;
+    this._plotPoints.clear();
+    this._plotPoints.set(this.initYear, this.initValue);
+    
+    return this;
   }
 } 

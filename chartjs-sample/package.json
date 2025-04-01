@@ -1,19 +1,20 @@
 {
-    "name": "@goalscash/chartjs-sample",
-    "version": "0.0.1",
-    "scripts": {
-        "build": "parcel build src/index.html",
-        "start": "parcel src/index.html"
-    },
-    "author": "",
-    "license": "ISC",
-    "description": "",
-    "dependencies": {
-        "@goalscash/lib": "../lib",
-        "@types/chart.js": "^2.9.41",
-        "chart.js": "^4.4.8"
-    },
-    "devDependencies": {
-        "parcel": "^2.13.3"
-    }
+  "name": "@goalscash/chartjs-sample",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "parcel build src/index.html",
+    "start": "parcel src/index.html",
+    "clean": "rimraf dist .parcel-cache"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@goalscash/lib": "../lib",
+    "@types/chart.js": "^2.9.41",
+    "chart.js": "^4.4.8"
+  },
+  "devDependencies": {
+    "parcel": "^2.13.3"
+  }
 }

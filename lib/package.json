@@ -5,7 +5,8 @@
   "types": "dist",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "clean": "rimraf dist coverage"
   },
   "author": "",
   "license": "ISC",
