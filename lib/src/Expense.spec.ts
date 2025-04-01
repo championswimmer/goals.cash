@@ -17,4 +17,12 @@ describe("Expense", () => {
     expect(plotPoints[1].value).toBe(1050);
     
   });
+
+  it("should create an expense with a down payment", () => {
+    const expense = new Expense("Expense", getRandomExpenseColor(), 2020, 2025, 1000, 0.05, 1000);
+
+    const plotPoints = expense.getPlotPoints(2020, 2025);
+
+    expect(plotPoints[0].value).toBe(2000);
+  });
 });

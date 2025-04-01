@@ -11,14 +11,17 @@ export class Expense implements MoneyStream {
   initValue: number;
   growthRate: number;
   endYear: number;
+  // if this expense if for a loan, a down payment can be made
+  downPayment?: number;
   
-  constructor(name: string, color: string, initYear: number, endYear: number, initValue: number, growthRate: number) {
+  constructor(name: string, color: string, initYear: number, endYear: number, initValue: number, growthRate: number, downPayment?: number) {
     this.name = name;
     this.color = color;
     this.initYear = initYear;
     this.endYear = endYear;
     this.initValue = initValue;
     this.growthRate = growthRate;
+    this.downPayment = downPayment;
   }
   
   getPlotPoints(startYear: number, endYear: number): PlotPoint[] {
@@ -34,7 +37,12 @@ export class Expense implements MoneyStream {
       // Calculate the value for the current year based on growth rate
       const yearsOfGrowth = year - this.initYear;
       const growthFactor = Math.pow(1 + this.growthRate, yearsOfGrowth);
-      const value = this.initValue * growthFactor;
+      let value = this.initValue * growthFactor;
+      
+      // Add downpayment to first year if it exists
+      if (year === this.initYear && this.downPayment) {
+        value += this.downPayment;
+      }
       
       plotPoints.push({ year, value });
     }
@@ -53,12 +61,13 @@ export class Expense implements MoneyStream {
       return this;
     }
     
-    // Calculate the growth factor to adjust the initial value
-    const yearsOfGrowth = this.initYear - startYear;
-    const growthFactor = Math.pow(1 + this.growthRate, yearsOfGrowth);
+    // Calculate the yearly change needed for linear growth
+    const yearDiff = this.initYear - startYear;
+    const valueDiff = this.initValue - startValue;
+    const yearlyChange = valueDiff / yearDiff;
     
-    // Update initial value based on the start value and growth
-    this.initValue = startValue * growthFactor;
+    // Update initial value to match the linear progression
+    this.initValue = startValue + (yearDiff * yearlyChange);
     
     return this;
   }
