@@ -36,6 +36,7 @@ export interface MoneyPlottable {
    */
   growthRate: number
 
+  getPlotPoint(year: number): PlotPoint
   getPlotPoints(startYear: number, endYear: number): PlotPoint[]
 }
 

@@ -43,6 +43,15 @@ export class Liability implements MoneyPool {
     return plotPoints;
   }
 
+  getPlotPoint(year: number): PlotPoint {
+    // Ensure we have all the plot points calculated
+    this.calculatePlotPoints(Math.min(year, this.initYear), Math.max(year, this.initYear));
+    return {
+      year,
+      value: this._plotPoints.get(year) || 0
+    };
+  }
+
   private calculatePlotPoints(startYear: number, endYear: number) {
     // for the simple case, without repayment, liability just grows 
     if (!this.repaymentExpense) {

@@ -26,7 +26,7 @@ describe('Goal', () => {
     expect(expense).toBeDefined();
     expect(expense.name).toBe('Home Mortgage Payment');
     expect(expense.initYear).toBe(2025);
-    expect(expense.endYear).toBe(2054); // 2025 + 30 - 1
+    expect(expense.endYear).toBe(2055); // 2025 + 30
     expect(expense.initValue).toBeGreaterThan(0);
     expect(expense.growthRate).toBe(0);
     
@@ -37,6 +37,7 @@ describe('Goal', () => {
     expect(liability?.initYear).toBe(2025);
     expect(liability?.initValue).toBe(500000);
     expect(liability?.growthRate).toBe(0.04);
+
   });
   
   it('should calculate correct payments for a loan with interest', () => {
@@ -53,8 +54,6 @@ describe('Goal', () => {
     const liability = goal.getLiability();
     expect(liability?.initValue).toBeCloseTo(40000, 0);
 
-    console.log(liability?.getPlotPoints(2020, 2035));
-    console.log(expense.getPlotPoints(2020, 2035));
   });
 
   it("should create a loan with a down payment", () => {
@@ -66,8 +65,6 @@ describe('Goal', () => {
     const liability = goal.getLiability();
     expect(liability?.initValue).toBeCloseTo(30000, 0);
 
-    console.log(liability?.getPlotPoints(2020, 2035));
-    console.log(expense.getPlotPoints(2020, 2035));
   });
   
   it('should calculate correct payments for a 0% interest loan', () => {

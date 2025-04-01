@@ -41,6 +41,12 @@ export class Income implements MoneyStream {
     
     return plotPoints;
   }
+
+  getPlotPoint(year: number): PlotPoint {
+    // Ensure we have all the plot points calculated
+    const plotPoints = this.getPlotPoints(Math.min(year, this.initYear), Math.max(year, this.initYear));
+    return plotPoints.find(point => point.year === year) || { year, value: 0 };
+  }
   
   extrapolateFromStart(startYear: number, startValue: number): MoneyStream {
     if (startYear > this.initYear) {

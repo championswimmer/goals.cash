@@ -34,6 +34,8 @@ describe("Asset", () => {
     expect(plotPoints[1].year).toBe(2016);
     expect(plotPoints[1].value).toBe(0);
 
+    expect(asset.getPlotPoint(2015).value).toBe(0);
+
   })
 
   it("should extrapolate the asset's value", () => {

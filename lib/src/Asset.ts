@@ -40,6 +40,15 @@ export class Asset implements MoneyPool {
     return plotPoints;
   }
 
+  getPlotPoint(year: number): PlotPoint {
+    // Ensure we have all the plot points calculated
+    this.calculatePlotPoints(Math.min(year, this.initYear), Math.max(year, this.initYear));
+    return {
+      year,
+      value: this._plotPoints.get(year) || 0
+    };
+  }
+
   private calculatePlotPoints(startYear: number, endYear: number) {
 
     // Calculate plot points for years after initYear

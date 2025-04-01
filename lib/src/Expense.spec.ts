@@ -15,6 +15,9 @@ describe("Expense", () => {
 
     expect(plotPoints[1].year).toBe(2021);
     expect(plotPoints[1].value).toBe(1050);
+
+    expect(expense.getPlotPoint(2020).value).toBe(1000);
+    expect(expense.getPlotPoint(2021).value).toBe(1050);
     
   });
 
