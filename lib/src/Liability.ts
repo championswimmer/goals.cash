@@ -62,8 +62,12 @@ export class Liability implements MoneyPool {
         if (this._plotPoints.has(year)) continue;
 
         const prevYearValue = this._plotPoints.get(year - 1) || 0;
-        const repaymentExpenseValue = this.repaymentExpense!.getPlotPoints(year, year).find(point => point.year === year)?.value || 0;
-        const thisYearValue = prevYearValue * (1 + this.growthRate) - repaymentExpenseValue;
+        const repaymentExpenseValue = this.repaymentExpense!.getPlotPoints(this.initYear, endYear).find(point => point.year === year)?.value || 0;
+        let thisYearValue = prevYearValue * (1 + this.growthRate)
+        thisYearValue -= repaymentExpenseValue;
+        if (Math.abs(thisYearValue) < 0.1) { // due to rounding errors, we set it to 0
+          thisYearValue = 0;
+        }
         this._plotPoints.set(year, thisYearValue);
       }
     }

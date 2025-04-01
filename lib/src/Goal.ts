@@ -10,6 +10,7 @@ export class Goal {
   amount: number;
   interestRate: number;
   term: number;
+  downPayment: number;
 
   private _liability: Liability | null = null;
   private _expense!: Expense;
@@ -20,7 +21,8 @@ export class Goal {
     startYear: number,
     amount: number,
     interestRate: number,
-    term: number
+    term: number,
+    downPayment: number = 0
   ) {
     this.name = name;
     this.color = color;
@@ -28,6 +30,7 @@ export class Goal {
     this.amount = amount;
     this.interestRate = interestRate;
     this.term = term;
+    this.downPayment = downPayment;
 
     // Create the appropriate Expense and Liability
     this.createFinancialEntities();
@@ -42,7 +45,8 @@ export class Goal {
         this.startYear,
         this.startYear,
         this.amount,
-        0 // No growth for a one-time expense
+        0, // No growth for a one-time expense
+        this.downPayment
       );
       // No liability for term = 0
       this._liability = null;
@@ -50,24 +54,26 @@ export class Goal {
       // Calculate the yearly payment amount based on loan parameters
       const yearlyPayment = this.calculateYearlyPayment();
       
-      // Create an expense that lasts for the term years
+      // Calculate the actual loan amount after downpayment
+      const loanAmount = this.amount - this.downPayment;
+      
+      // Create an expense that lasts for the term years and includes downpayment
       this._expense = new Expense(
         `${this.name} Payment`,
         this.color,
         this.startYear,
-        this.startYear + this.term - 1, // End year is start + term - 1
+        this.startYear + this.term, // End year is start + term
         yearlyPayment,
-        0 // Fixed payment amount, so growth rate is 0
+        0, // Fixed payment amount, so growth rate is 0
+        this.downPayment
       );
       
-      // Create a liability that starts with the full amount
-      // and pass the repaymentExpense to the Liability constructor
-      // it internally will use the repaymentExpense to calculate the plot points
+      // Create a liability that starts with the loan amount (after downpayment)
       this._liability = new Liability(
         `${this.name} Loan`,
         getRandomLiabilityColor(),
         this.startYear,
-        this.amount,
+        loanAmount,
         this.interestRate,
         this._expense
       );
@@ -80,17 +86,18 @@ export class Goal {
     // Standard formula for calculating fixed payment for a loan:
     // P = A * r(1+r)^n / ((1+r)^n - 1)
     // Where:
-    // P = payment, A = amount, r = interest rate, n = term in years
+    // P = payment, A = amount (minus downpayment), r = interest rate, n = term in years
     
     const r = this.interestRate;
     const n = this.term;
+    const loanAmount = this.amount - this.downPayment;
     
     if (r === 0) {
-      // If there's no interest, simply divide the amount by the term
-      return this.amount / n;
+      // If there's no interest, simply divide the loan amount by the term
+      return loanAmount / n;
     }
     
-    const payment = this.amount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    const payment = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     return payment;
   }
 

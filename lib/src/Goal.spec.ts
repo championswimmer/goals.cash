@@ -56,6 +56,19 @@ describe('Goal', () => {
     console.log(liability?.getPlotPoints(2020, 2035));
     console.log(expense.getPlotPoints(2020, 2035));
   });
+
+  it("should create a loan with a down payment", () => {
+    const goal = new Goal("Car Loan", getRandomExpenseColor(), 2025, 40000, 0.05, 4, 10000);
+
+    const expense = goal.getExpense();
+    expect(expense.initValue).toBeCloseTo(8460.35, 0);
+
+    const liability = goal.getLiability();
+    expect(liability?.initValue).toBeCloseTo(30000, 0);
+
+    console.log(liability?.getPlotPoints(2020, 2035));
+    console.log(expense.getPlotPoints(2020, 2035));
+  });
   
   it('should calculate correct payments for a 0% interest loan', () => {
     const goal = new Goal('Interest-free Loan', getRandomExpenseColor(), 2025, 10000, 0, 4);
