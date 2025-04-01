@@ -47,7 +47,7 @@ export interface MoneyPlottable {
 export interface MoneyPool extends MoneyPlottable {
   type: "pool"
   chart: "area"
-  poolType: "assets" | "liabilities"
+  poolType: "asset" | "liability"
 
   /**
    * Extrapolate the pool's value from startValue at the startYear to the initial value at the initYear

@@ -3,7 +3,7 @@ import { MoneyPool, PlotPoint } from './types';
 export class Liability implements MoneyPool {
   type: "pool" = "pool";
   chart: "area" = "area";
-  poolType: "liabilities" = "liabilities";
+  poolType: "liability" = "liability";
   
   name: string;
   color: string;
@@ -41,15 +41,11 @@ export class Liability implements MoneyPool {
   }
   
   private calculatePlotPoints(startYear: number, endYear: number) {
-    // Calculate plot points for years before initYear
-    for (let year = this.initYear - 1; year >= startYear; year--) {
-      const nextYearValue = this._plotPoints.get(year + 1) || 0;
-      const thisYearValue = nextYearValue / (1 + this.growthRate);
-      this._plotPoints.set(year, thisYearValue);
-    }
-    
     // Calculate plot points for years after initYear
     for (let year = this.initYear + 1; year <= endYear; year++) {
+      // If we already have the value, skip calculation
+      if (this._plotPoints.has(year)) continue;
+
       const prevYearValue = this._plotPoints.get(year - 1) || 0;
       const thisYearValue = prevYearValue * (1 + this.growthRate);
       this._plotPoints.set(year, thisYearValue);
@@ -57,26 +53,7 @@ export class Liability implements MoneyPool {
   }
   
   extrapolateFromStart(startYear: number, startValue: number): MoneyPool {
-    if (startYear > this.initYear) {
-      throw new Error("Start year must be less than or equal to init year");
-    }
-    
-    // If initYear is equal to startYear, just update the value
-    if (startYear === this.initYear) {
-      this.initValue = startValue;
-      this._plotPoints.set(startYear, startValue);
-      return this;
-    }
-    
-    // Calculate the growth factor to adjust the initial value
-    const yearsOfGrowth = this.initYear - startYear;
-    const growthFactor = Math.pow(1 + this.growthRate, yearsOfGrowth);
-    
-    // Update initial value based on the start value and growth
-    this.initValue = startValue * growthFactor;
-    this._plotPoints.clear();
-    this._plotPoints.set(this.initYear, this.initValue);
-    
-    return this;
+    // noop - liabilities are not extrapolated 
+    throw new Error("Liabilities are not extrapolated");
   }
 } 

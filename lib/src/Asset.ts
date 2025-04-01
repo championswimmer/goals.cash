@@ -3,7 +3,7 @@ import { MoneyPool, PlotPoint } from './types';
 export class Asset implements MoneyPool {
   type: "pool" = "pool";
   chart: "area" = "area";
-  poolType: "assets" = "assets";
+  poolType: "asset" = "asset";
 
   name: string;
   color: string;
