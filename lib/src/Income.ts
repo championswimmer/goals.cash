@@ -1,5 +1,12 @@
 import { MoneyStream, PlotPoint } from './types';
 
+class ErrorIncomeBounds extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ERR_INCOME_BOUNDS";
+  }
+}
+
 export class Income implements MoneyStream {
   type: "stream" = "stream";
   chart: "bar" = "bar";
@@ -13,6 +20,9 @@ export class Income implements MoneyStream {
   endYear: number;
   
   constructor(name: string, color: string, initYear: number, endYear: number, initValue: number, growthRate: number) {
+    if (endYear < initYear) {
+      throw new ErrorIncomeBounds("Income end year must be greater than or equal to init year");
+    }
     this.name = name;
     this.color = color;
     this.initYear = initYear;
