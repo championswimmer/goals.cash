@@ -1,30 +1,27 @@
 import { Asset } from ".";
 
+type SavingsAssetMap = Array<{ asset: Asset, percentage: number }>
+
 export class SavingsDistribution {
   startYear: number;
   endYear: number;
-  savingsAssetMap: Map<Asset, number> = new Map();
+  savingsAssetMap!: SavingsAssetMap;
 
-  constructor(startYear: number, endYear: number) {
+  constructor(startYear: number, endYear: number, savingsAssetMap: SavingsAssetMap) {
     this.startYear = startYear;
     this.endYear = endYear;
+    this.setSavingsAssetMap(savingsAssetMap);
   }
 
-  private static is100PercentMapped(savingsAssetMap: Map<Asset, number>): boolean {
-    const totalSavings = Array.from(savingsAssetMap.values()).reduce((acc, curr) => acc + curr, 0);
+  private static is100PercentMapped(savingsAssetMap: SavingsAssetMap): boolean {
+    const totalSavings = savingsAssetMap.reduce((acc, curr) => acc + curr.percentage, 0);
     return totalSavings === 100;
   }
 
-  private validate(): void {
-    if (!SavingsDistribution.is100PercentMapped(this.savingsAssetMap)) {
-      throw new Error("Savings distribution must be 100% mapped");
-    }
-  }
-
-  private setSavingsDistribution(savingsAssetMap: Map<Asset, number>): void {
+  private setSavingsAssetMap(savingsAssetMap: Array<{ asset: Asset, percentage: number }>): void {
     // check all assets have startYear <= this.startYear
-    for (const asset of savingsAssetMap.keys()) {
-      if (asset.initYear < this.startYear) {
+    for (const { asset, percentage } of savingsAssetMap) {
+      if (this.startYear < asset.initYear) {
         throw new Error("Cannot distribute savings for an asset that has not started yet");
       }
     }
