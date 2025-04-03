@@ -42,5 +42,12 @@ export class Portfolio {
     this.validator.validateExpense(expense);
     this.expenses.push(expense);
   }
+
+  addSavingsDistribution(savingsDistribution: SavingsDistribution) {
+    this.validator.validateSavingsDistribution(savingsDistribution);
+    this.savingsDistributions.push(savingsDistribution);
+    // re-sort the savings distributions by start year 
+    this.savingsDistributions.sort((a, b) => a.startYear - b.startYear);
+  }
  
 }
