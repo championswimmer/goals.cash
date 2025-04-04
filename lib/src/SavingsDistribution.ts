@@ -22,6 +22,7 @@ export class SavingsDistribution {
     // check all assets have startYear <= this.startYear
     for (const { asset, percentage } of savingsAssetMap) {
       if (this.startYear < asset.initYear) {
+        // TODO: add error class
         throw new Error("Cannot distribute savings for an asset that has not started yet");
       }
     }

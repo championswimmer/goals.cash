@@ -26,21 +26,29 @@ export class Portfolio {
   addAsset(asset: Asset) {
     this.validator.validateAsset(asset);
     this.assets.push(asset);
+    // keep sorted by start year
+    this.assets.sort((a, b) => a.initYear - b.initYear);
   }
 
   addLiability(liability: Liability) {
     this.validator.validateLiability(liability);
     this.liabilities.push(liability);
+    // keep sorted by start year
+    this.liabilities.sort((a, b) => a.initYear - b.initYear);
   }
 
   addIncome(income: Income) {
     this.validator.validateIncome(income);
     this.incomes.push(income);
+    // keep sorted by start year
+    this.incomes.sort((a, b) => a.initYear - b.initYear);
   }
 
   addExpense(expense: Expense) {
     this.validator.validateExpense(expense);
     this.expenses.push(expense);
+    // keep sorted by start year
+    this.expenses.sort((a, b) => a.initYear - b.initYear);
   }
 
   addSavingsDistribution(savingsDistribution: SavingsDistribution) {

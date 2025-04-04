@@ -12,3 +12,9 @@ export { Expense } from "./Expense"
 export { Goal } from "./Goal"
 export { Portfolio } from "./Portfolio"
 export { SavingsDistribution } from "./SavingsDistribution"
+export {
+  PortfolioValidator,
+  ErrorOutsidePortfolioBounds,
+  ErrorSavingsDistributionGap,
+  ErrorSavingsDistributionOverlap
+} from "./PortfolioValidator"

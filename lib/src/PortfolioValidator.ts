@@ -1,21 +1,21 @@
 import { Asset, Expense, Income, Liability, SavingsDistribution } from ".";
 import { Portfolio } from "./Portfolio";
 
-class ErrorOutsidePortfolioBounds extends Error {
+export class ErrorOutsidePortfolioBounds extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ERR_PORTFOLIO_BOUNDS";
   }
 }
 
-class ErrorSavingsDistributionGap extends Error {
+export class ErrorSavingsDistributionGap extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ERR_SAVINGS_DISTRIBUTION_GAP";
   }
 }
 
-class ErrorSavingsDistributionOverlap extends Error {
+export class ErrorSavingsDistributionOverlap extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ERR_SAVINGS_DISTRIBUTION_OVERLAP";
@@ -60,7 +60,7 @@ export class PortfolioValidator {
 
   validateExpense(expense: Expense) {
     let valid = expense.initYear >= this.portfolio.startYear && expense.initYear <= this.portfolio.endYear;
-    valid &&= expense.endYear >= this.portfolio.startYear && expense.endYear <= this.portfolio.endYear; 
+    valid &&= expense.endYear >= this.portfolio.startYear && expense.endYear <= this.portfolio.endYear;
     if (!valid) {
       throw new ErrorOutsidePortfolioBounds(`Expense ${expense.name} is outside the portfolio bounds`);
     }
@@ -86,14 +86,14 @@ export class PortfolioValidator {
    */
   validateSavingsDistributions() {
     const distributions = this.portfolio.savingsDistributions;
-    
+
     if (distributions.length === 0) {
       throw new ErrorSavingsDistributionGap("No savings distributions defined");
     }
 
-    // Check that first distribution starts at portfolio start
-    if (distributions[0].startYear !== this.portfolio.startYear) {
-      throw new ErrorSavingsDistributionGap("First savings distribution must start at portfolio start year");
+    // Check that first distribution starts at beginning of first asset
+    if (distributions[0].startYear !== this.portfolio.assets[0].initYear) {
+      throw new ErrorSavingsDistributionGap("First savings distribution must start at beginning of first asset");
     }
 
     // Check that last distribution ends at portfolio end
@@ -106,15 +106,17 @@ export class PortfolioValidator {
       const current = distributions[i];
       const next = distributions[i + 1];
 
-      // Check for gap
+      // Check for gap and overlap
       if (current.endYear + 1 !== next.startYear) {
-        throw new ErrorSavingsDistributionGap(`Gap detected between savings distributions at year ${current.endYear}`);
+        // Check for overlap
+        if (current.endYear >= next.startYear) {
+          throw new ErrorSavingsDistributionOverlap(`Overlapping savings distributions detected at year ${next.startYear}`);
+        } else {
+          throw new ErrorSavingsDistributionGap(`Gap detected between savings distributions at year ${current.endYear}`);
+        }
       }
 
-      // Check for overlap
-      if (current.endYear >= next.startYear) {
-        throw new ErrorSavingsDistributionOverlap(`Overlapping savings distributions detected at year ${next.startYear}`);
-      }
+
     }
   }
 
