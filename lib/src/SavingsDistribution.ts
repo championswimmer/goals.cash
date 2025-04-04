@@ -2,6 +2,10 @@ import { Asset } from ".";
 
 type SavingsAssetMap = Array<{ asset: Asset, percentage: number }>
 
+/**
+ * This defines how surplus income (i.e. savings) is distributed across assets.
+ * Since there can be multiple assets in the portfolio, the surplus income can be distributed among them.
+ */
 export class SavingsDistribution {
   startYear: number;
   endYear: number;

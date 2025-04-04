@@ -1,3 +1,4 @@
+import { ErrorUnsupportedExtrapolation } from './errors';
 import { MoneyStream, PlotPoint } from './types';
 
 class ErrorIncomeBounds extends Error {
@@ -59,23 +60,7 @@ export class Income implements MoneyStream {
   }
   
   extrapolateFromStart(startYear: number, startValue: number): MoneyStream {
-    if (startYear > this.initYear) {
-      throw new Error("Start year must be less than or equal to init year");
-    }
-    
-    // If initYear is equal to startYear, just update the value
-    if (startYear === this.initYear) {
-      this.initValue = startValue;
-      return this;
-    }
-    
-    // Calculate the growth factor to adjust the initial value
-    const yearsOfGrowth = this.initYear - startYear;
-    const growthFactor = Math.pow(1 + this.growthRate, yearsOfGrowth);
-    
-    // Update initial value based on the start value and growth
-    this.initValue = startValue * growthFactor;
-    
-    return this;
+    // noop - incomes are not extrapolated
+    throw new ErrorUnsupportedExtrapolation("Incomes are not extrapolated");
   }
 } 

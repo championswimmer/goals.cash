@@ -22,8 +22,6 @@ export class ErrorSavingsDistributionOverlap extends Error {
   }
 }
 
-
-
 export class PortfolioValidator {
   portfolio: Portfolio;
 
@@ -115,7 +113,6 @@ export class PortfolioValidator {
           throw new ErrorSavingsDistributionGap(`Gap detected between savings distributions at year ${current.endYear}`);
         }
       }
-
 
     }
   }
