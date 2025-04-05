@@ -1,6 +1,6 @@
-import { ErrorUnsupportedExtrapolation } from './commons/errors';
-import { extrapolatePlotPointsFromStart } from './commons/plot-point-utils';
-import { MoneyStream, PlotPoint } from './commons/types';
+import { ErrorUnsupportedExtrapolation } from '../commons/errors';
+import { extrapolatePlotPointsFromStart } from '../commons/plot-point-utils';
+import { MoneyStream, PlotPoint } from '../commons/types';
 
 class ErrorIncomeBounds extends Error {
   constructor(message: string) {

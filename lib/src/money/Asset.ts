@@ -1,5 +1,5 @@
-import { extrapolatePlotPointsFromStart, populatePlotPointsWithPastData } from './commons/plot-point-utils';
-import { MoneyPool, PlotPoint } from './commons/types';
+import { extrapolatePlotPointsFromStart, populatePlotPointsWithPastData } from '../commons/plot-point-utils';
+import { MoneyPool, PlotPoint } from '../commons/types';
 
 export class Asset implements MoneyPool {
   type: "pool" = "pool";

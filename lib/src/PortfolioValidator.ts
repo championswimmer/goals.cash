@@ -1,40 +1,6 @@
 import { Asset, Expense, Income, Liability, SavingsDistribution, SpendPriority } from ".";
+import { ErrorOutsidePortfolioBounds, ErrorSavingsDistributionGap, ErrorSavingsDistributionOverlap, ErrorSpendPriorityGap, ErrorSpendPriorityOverlap } from "./commons/errors";
 import { Portfolio } from "./Portfolio";
-
-export class ErrorOutsidePortfolioBounds extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ERR_PORTFOLIO_BOUNDS";
-  }
-}
-
-export class ErrorSavingsDistributionGap extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ERR_SAVINGS_DISTRIBUTION_GAP";
-  }
-}
-
-export class ErrorSavingsDistributionOverlap extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ERR_SAVINGS_DISTRIBUTION_OVERLAP";
-  }
-}
-
-export class ErrorSpendPriorityGap extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ERR_SPEND_PRIORITY_GAP";
-  }
-}
-
-export class ErrorSpendPriorityOverlap extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ERR_SPEND_PRIORITY_OVERLAP";
-  }
-}
 
 export class PortfolioValidator {
   portfolio: Portfolio;

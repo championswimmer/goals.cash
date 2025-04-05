@@ -1,5 +1,5 @@
-import { ErrorUnsupportedExtrapolation } from './commons/errors';
-import { MoneyStream, PlotPoint } from './commons/types';
+import { ErrorUnsupportedExtrapolation } from '../commons/errors';
+import { MoneyStream, PlotPoint } from '../commons/types';
 
 class ErrorExpenseBounds extends Error {
   constructor(message: string) {

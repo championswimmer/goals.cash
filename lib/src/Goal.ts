@@ -1,5 +1,5 @@
-import { Liability } from "./Liability";
-import { Expense } from "./Expense";
+import { Liability } from "./money/Liability";
+import { Expense } from "./money/Expense";
 import { MoneyPool, MoneyStream } from "./commons/types";
 import { getRandomLiabilityColor } from "./commons/colors";
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import { Income } from "./Income";
-import { getRandomIncomeColor } from "./commons/colors";
+import { getRandomIncomeColor } from "../commons/colors";
 
 describe("Income", () => {
   it("should create an income", () => {

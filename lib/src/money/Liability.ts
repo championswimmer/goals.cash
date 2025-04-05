@@ -1,6 +1,6 @@
 import { Expense } from './Expense';
-import { populatePlotPointsWithPastData } from './commons/plot-point-utils';
-import { MoneyPool, PlotPoint } from './commons/types';
+import { populatePlotPointsWithPastData } from '../commons/plot-point-utils';
+import { MoneyPool, PlotPoint } from '../commons/types';
 
 export class Liability implements MoneyPool {
   type: "pool" = "pool";
