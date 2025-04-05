@@ -45,3 +45,10 @@ export class ErrorPortfolioSimulationIncomplete extends Error {
     this.name = "ERR_PORTFOLIO_SIMULATION_INCOMPLETE";
   }
 }
+
+export class ErrorDeficitExceedsAssets extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ERR_DEFICIT_EXCEEDS_ASSETS";
+  }
+}

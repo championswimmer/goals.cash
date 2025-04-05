@@ -1,4 +1,4 @@
-import { Asset, Expense, Income, Liability, Portfolio, SavingsDistribution, SpendPriority } from ".";
+import { Asset, ErrorDeficitExceedsAssets, Expense, Income, Liability, Portfolio, SavingsDistribution, SpendPriority } from ".";
 
 
 export class PortfolioSimulator {
@@ -58,16 +58,80 @@ export class PortfolioSimulator {
       const netIncome = grossIncome - grossExpenses;
       this._portfolio.netFlow.updatePlotPoint(year, netIncome);
 
+      console.log('year', year, 'netIncome', netIncome, 'grossIncome', grossIncome, 'grossExpenses', grossExpenses);
+
       // case: net income is positive
       if (netIncome >= 0) {
         // split it by the ratio available in savingsDistribution and update those assets
         savingsDistribution.savingsAssetMap
           .filter(({ asset }) => asset.initYear < year) // inflow only into assets that have started
           .forEach(({ asset, percentage }) => {
-            console.log(year, asset.name, percentage, asset);
             const inflowToAsset = (percentage * netIncome) / 100;
             asset.updatePlotPoint(year, inflowToAsset);
           });
+      } else {
+        // case: net income is negative
+        // go through assets in order of spendPriority and spend from them
+        let deficit = netIncome; // NOTE: this is negative
+
+        // first-pass: without violating spendCutoff
+        spendPriority.spendPriorityMap
+          .filter(({ asset }) => asset.initYear < year) // spend from assets that have started
+          .sort((a, b) => a.priority - b.priority) // sort by priority, just for sanity (should already be sorted)
+          .forEach(({ asset, priority }) => {
+            if (deficit === 0) { // no deficit left to spend
+              return;
+            }
+            if (asset.getPlotPoint(year - 1).value - asset.spendCutoff <= 0) {
+              return; // asset below spendCutoff, skip
+            }
+            // check if we can spend entirely from this asset
+            if (asset.getPlotPoint(year - 1).value - asset.spendCutoff > -deficit) {
+              // we can spend from this asset
+              asset.updatePlotPoint(year, deficit);
+              deficit = 0;
+            } else {
+              // spend what we can and move on
+              const amountToSpend = -(asset.getPlotPoint(year - 1).value - asset.spendCutoff);
+              asset.updatePlotPoint(year, amountToSpend);
+              deficit = deficit - amountToSpend;
+            }
+          })
+
+        // second-pass: without considering spendCutoff
+        if (deficit !== 0) {
+          spendPriority.spendPriorityMap
+            .filter(({ asset }) => asset.initYear < year) // spend from assets that have started
+            .sort((a, b) => a.priority - b.priority) // sort by priority, just for sanity (should already be sorted)
+            .forEach(({ asset, priority }) => {
+              if (deficit === 0) { // no deficit left to spend
+                return;
+              }
+              // check if we can spend entirely from this asset
+              if (asset.getPlotPoint(year - 1).value > -deficit) {
+                // we can spend from this asset (ignoring the spendCutoff)
+                asset.updatePlotPoint(year, deficit, true);
+                deficit = 0;
+              } else {
+                // spend what we can and move on
+                const amountToSpend = -asset.getPlotPoint(year - 1).value;
+                asset.updatePlotPoint(year, amountToSpend, true);
+                deficit = deficit - amountToSpend
+              }
+            })
+        }
+
+        // if deficit still exists, throw an error
+        if (deficit < 0) {
+          throw new ErrorDeficitExceedsAssets(`Deficit of ${deficit} after spending from all assets. Portfolio not sustainable.`);
+        }
+      }
+
+      // update all assets (a dragnet to cover assets that might not be in distribution or priority)
+      // this is safe to do because updatePlotPoint() handles repeat calls with 0 inflows gracefully
+      for (const asset of activeAssets) {
+        console.log('updatePlotPoint',year, asset.name, asset.getPlotPoint(year).value);
+        asset.updatePlotPoint(year, 0);
       }
     }
   }

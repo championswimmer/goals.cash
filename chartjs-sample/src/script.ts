@@ -14,12 +14,12 @@ import Chart, { ChartType } from "chart.js/auto";
 
 const pb = new Portfolio.Builder(2015, 2035, new Date().getFullYear(), 30)
 
-const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2015, 10000, 0.05)
+const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2015, 10000, 0.01)
 pb.addAsset(savingsAsset)
 // pb.addLiability(new Liability("Mortgage", "red", 2015, 200000, 0.03))
 pb.addIncome(new Income("Salary", colors.getRandomIncomeColor(), 2020, 2030, 50000, 0.05))
 pb.addIncome(new Income("Side Hustle", colors.getRandomIncomeColor(), 2020, 2030, 10000, 0.05))
-pb.addExpense(new Expense("Rent", colors.getRandomExpenseColor(), 2025, 2030, 10000, 0.03))
+pb.addExpense(new Expense("Rent", colors.getRandomExpenseColor(), 2022, 2033, 20000, 0.03))
 
 pb.addSavingsDistribution(new SavingsDistribution(2015, 2035, [
   { asset: savingsAsset, percentage: 100 },
@@ -86,7 +86,7 @@ const portfolioChart = new Chart(ctx, {
       }
     },
     scales: {
-      y: {
+      y1: {
         beginAtZero: true,
         stacked: true,
       },

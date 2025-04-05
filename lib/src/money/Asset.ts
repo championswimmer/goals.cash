@@ -65,8 +65,17 @@ export class Asset implements MoneyPool {
    */
   updatePlotPoint(year: number, inflowAmount: number, ignoreCutoff: boolean = false): boolean {
     // fail-fast: simulation is only for years after init year
-    if (year <= this.initYear) {
-      throw new Error(`Simulation is only for years after init year ${this.initYear}`);
+    if (year < this.initYear) {
+      throw new Error(`Simulation is only for years after init year ${this.initYear}`)
+    }
+    if (year === this.initYear) {
+      // this value is set during init, skip
+      return false;
+    }
+    // if zero inflow and this year data exists, ignore
+    // this exists so that simulate() can safely call updatePlotPoint(year, 0) multiple times
+    if (inflowAmount === 0 && this._plotPoints.has(year)) {
+      return false;
     }
     // fail-fast: error if not simulated till previous year
     if (!this._plotPoints.has(year - 1)) {
