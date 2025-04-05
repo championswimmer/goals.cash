@@ -79,7 +79,7 @@ export interface MoneyPool extends MoneyPlottable {
  */
 export interface MoneyStream extends MoneyPlottable {
   type: "stream"
-  chart: "bar"
+  chart: "bar" | "line"
   streamType: "income" | "expense" | "flow"
 
   /**

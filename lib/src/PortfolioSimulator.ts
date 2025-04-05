@@ -56,9 +56,7 @@ export class PortfolioSimulator {
 
       // calculate net income
       const netIncome = grossIncome - grossExpenses;
-      
-      console.log(`Year ${year}: grossIncome = ${grossIncome}, grossExpenses = ${grossExpenses}, netIncome = ${netIncome}`);
-      
+      this._portfolio.netFlow.updatePlotPoint(year, netIncome);
     }
   }
 

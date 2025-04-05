@@ -1,4 +1,5 @@
 import { Asset, Expense, Income, Liability, SavingsDistribution, SpendPriority } from ".";
+import { NetFlow } from "./money/NetFlow";
 import { PortfolioValidator } from "./PortfolioValidator";
 
 export class Portfolio {
@@ -14,11 +15,15 @@ export class Portfolio {
   savingsDistributions: SavingsDistribution[] = [];
   spendPriorities: SpendPriority[] = [];
 
+  netFlow!: NetFlow;
+
   private constructor(startYear: number, endYear: number, currentYear: number, currentAge: number) {
     this.startYear = startYear;
     this.endYear = endYear;
     this.currentYear = currentYear;
     this.currentAge = currentAge;
+
+    this.netFlow = new NetFlow(this);
   }
 
   static Builder = class {

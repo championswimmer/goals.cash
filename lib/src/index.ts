@@ -20,13 +20,7 @@ export {
 } from "./PortfolioValidator"
 export { PortfolioSimulator } from "./PortfolioSimulator"
 
-export {
-  ErrorOutsidePortfolioBounds,
-  ErrorSavingsDistributionGap,
-  ErrorSavingsDistributionOverlap,
-  ErrorSpendPriorityGap,
-  ErrorSpendPriorityOverlap
-} from "./commons/errors"
+export * from "./commons/errors"
 
 
 export const colors = {

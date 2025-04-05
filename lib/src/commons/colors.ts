@@ -7,7 +7,7 @@
  */
 export function getRandomIncomeColor(): string {
   // Generate random green color with high saturation
-  const hue = 120 + Math.floor(Math.random() * 20); // Green hue 120-140
+  const hue = 110 + Math.floor(Math.random() * 40); // Green hue 110-150
   const saturation = 60 + Math.floor(Math.random() * 20); // 60-80%
   const lightness = 30 + Math.floor(Math.random() * 30); // 30-60%
   
@@ -22,7 +22,7 @@ export function getRandomIncomeColor(): string {
  */
 export function getRandomExpenseColor(): string {
   // Generate random red color with high saturation
-  const hue = 0 + Math.floor(Math.random() * 20); // Red hue 0-20
+  const hue = 330 + Math.floor(Math.random() * 30); // Red hue 330-360
   const saturation = 60 + Math.floor(Math.random() * 20); // 60-80%
   const lightness = 40 + Math.floor(Math.random() * 30); // 40-70%
   
@@ -37,7 +37,7 @@ export function getRandomExpenseColor(): string {
  */
 export function getRandomAssetColor(): string {
   // Generate random blue color with high saturation
-  const hue = 170 + Math.floor(Math.random() * 20); // Teal cyan hue 170-190
+  const hue = 170 + Math.floor(Math.random() * 30); // Teal cyan hue 170-200
   const saturation = 60 + Math.floor(Math.random() * 20); // 60-80%
   const lightness = 30 + Math.floor(Math.random() * 30); // 30-60%
 
@@ -52,7 +52,7 @@ export function getRandomAssetColor(): string {
  */
 export function getRandomLiabilityColor(): string {
   // Generate random orange color with high saturation
-  const hue = 40 + Math.floor(Math.random() * 20); // Orange hue 40-60
+  const hue = 30 + Math.floor(Math.random() * 30); // Orange hue 30-60
   const saturation = 60 + Math.floor(Math.random() * 20); // 60-80%
   const lightness = 30 + Math.floor(Math.random() * 30); // 30-60%
 

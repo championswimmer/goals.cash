@@ -31,6 +31,10 @@ pb.addSpendPriority(new SpendPriority(2015, 2075, [
 
 const portfolio = pb.build()
 
+const simulator = new PortfolioSimulator(portfolio)
+simulator.simulate()
+
+
 const ctx = document.getElementById("portfolio-chart") as HTMLCanvasElement
 
 const portfolioChart = new Chart(ctx, {
@@ -39,21 +43,36 @@ const portfolioChart = new Chart(ctx, {
       ...Array.from({ length: portfolio.endYear - portfolio.startYear + 1 }, (_, i) => portfolio.startYear + i),
     ],
     datasets: [
+      // net flow
+      {
+        label: portfolio.netFlow.name,
+        type: portfolio.netFlow.chart,
+        backgroundColor: portfolio.netFlow.color,
+        data: portfolio.netFlow.getPlotPoints(2015, 2075).map((point) => point.value),
+      },
+      // incomes
       ...(portfolio.incomes.map(income => ({
         label: income.name,
         type: income.chart,
         backgroundColor: income.color,
         data: income.getPlotPoints(2015, 2075).map((point) => point.value),
       }))),
+      // expenses
       ...(portfolio.expenses.map(expense => ({
         label: expense.name,
         type: expense.chart,
         backgroundColor: expense.color,
         data: expense.getPlotPoints(2015, 2075).map((point) => -point.value),
-      })))
+      }))),
+      
     ],
   },
   options: {
+    elements: {
+      line: {
+        cubicInterpolationMode: "monotone",
+      }
+    },
     scales: {
       y: {
         beginAtZero: true,
@@ -66,7 +85,5 @@ const portfolioChart = new Chart(ctx, {
   }
 })
 
-portfolioChart.update()
 
-const simulator = new PortfolioSimulator(portfolio)
-simulator.simulate()
+console.log(portfolio)
