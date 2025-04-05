@@ -14,6 +14,8 @@ export class PortfolioValidator {
     this.portfolio.liabilities.forEach(liability => this.validateLiability(liability));
     this.portfolio.incomes.forEach(income => this.validateIncome(income));
     this.portfolio.expenses.forEach(expense => this.validateExpense(expense));
+    this.validateSavingsDistributionList();
+    this.validateSpendPriorityList();
   }
 
   validateAsset(asset: Asset) {

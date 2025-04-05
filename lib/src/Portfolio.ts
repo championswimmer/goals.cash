@@ -7,64 +7,84 @@ export class Portfolio {
   currentYear: number; 
   currentAge: number;
 
-  private validator!: PortfolioValidator;
-
   assets: Asset[] = [];
   liabilities: Liability[] = [];
   incomes: Income[] = [];
   expenses: Expense[] = [];
   savingsDistributions: SavingsDistribution[] = [];
   spendPriorities: SpendPriority[] = [];
-  
-  constructor(startYear: number, endYear: number, currentYear: number, currentAge: number) {
+
+  private constructor(startYear: number, endYear: number, currentYear: number, currentAge: number) {
     this.startYear = startYear;
     this.endYear = endYear;
     this.currentYear = currentYear;
     this.currentAge = currentAge;
-    this.validator = new PortfolioValidator(this);
   }
 
-  addAsset(asset: Asset) {
-    this.validator.validateAsset(asset);
-    this.assets.push(asset);
-    // keep sorted by start year
-    this.assets.sort((a, b) => a.initYear - b.initYear);
-  }
+  static Builder = class {
+    public validator!: PortfolioValidator;
+    public portfolio!: Portfolio;
+    
+    constructor(startYear: number, endYear: number, currentYear: number, currentAge: number) {
+      this.portfolio = new Portfolio(startYear, endYear, currentYear, currentAge);
+      this.validator = new PortfolioValidator(this.portfolio);
+    }
+    
+    addAsset(asset: Asset): this {
+      this.validator.validateAsset(asset);
+      this.portfolio.assets.push(asset);
+      // keep sorted by start year
+      this.portfolio.assets.sort((a, b) => a.initYear - b.initYear);
+      return this;
 
-  addLiability(liability: Liability) {
-    this.validator.validateLiability(liability);
-    this.liabilities.push(liability);
-    // keep sorted by start year
-    this.liabilities.sort((a, b) => a.initYear - b.initYear);
-  }
+    }
 
-  addIncome(income: Income) {
-    this.validator.validateIncome(income);
-    this.incomes.push(income);
-    // keep sorted by start year
-    this.incomes.sort((a, b) => a.initYear - b.initYear);
-  }
+    addLiability(liability: Liability): this {
+      this.validator.validateLiability(liability);
+      this.portfolio.liabilities.push(liability);
+      // keep sorted by start year
+      this.portfolio.liabilities.sort((a, b) => a.initYear - b.initYear);
+      return this;
+    }
+  
+    addIncome(income: Income): this {
+      this.validator.validateIncome(income);
+      this.portfolio.incomes.push(income);
+      // keep sorted by start year
+      this.portfolio.incomes.sort((a, b) => a.initYear - b.initYear);
+      return this;
+    }
+  
+    addExpense(expense: Expense): this {
+      this.validator.validateExpense(expense);
+      this.portfolio.expenses.push(expense);
+      // keep sorted by start year
+      this.portfolio.expenses.sort((a, b) => a.initYear - b.initYear);
+      return this;
+    }
+  
+    addSavingsDistribution(savingsDistribution: SavingsDistribution): this {
+      this.validator.validateSavingsDistribution(savingsDistribution);
+      this.portfolio.savingsDistributions.push(savingsDistribution);
+      // re-sort the savings distributions by start year 
+      this.portfolio.savingsDistributions.sort((a, b) => a.startYear - b.startYear);
+      return this;
+    }
+  
+    addSpendPriority(spendPriority: SpendPriority): this {
+      this.validator.validateSpendPriority(spendPriority);
+      this.portfolio.spendPriorities.push(spendPriority);
+      // re-sort the spend priorities by start year 
+      this.portfolio.spendPriorities.sort((a, b) => a.startYear - b.startYear);
+      return this;
+    }
 
-  addExpense(expense: Expense) {
-    this.validator.validateExpense(expense);
-    this.expenses.push(expense);
-    // keep sorted by start year
-    this.expenses.sort((a, b) => a.initYear - b.initYear);
+    build(): Portfolio {
+      this.validator.validate();
+      return this.portfolio;
+    }
   }
-
-  addSavingsDistribution(savingsDistribution: SavingsDistribution) {
-    this.validator.validateSavingsDistribution(savingsDistribution);
-    this.savingsDistributions.push(savingsDistribution);
-    // re-sort the savings distributions by start year 
-    this.savingsDistributions.sort((a, b) => a.startYear - b.startYear);
-  }
-
-  addSpendPriority(spendPriority: SpendPriority) {
-    this.validator.validateSpendPriority(spendPriority);
-    this.spendPriorities.push(spendPriority);
-    // re-sort the spend priorities by start year 
-    this.spendPriorities.sort((a, b) => a.startYear - b.startYear);
-  }
+  
 
   getSavingsDistribution(year: number): SavingsDistribution {
     // find the savings distribution that has the year in its range
