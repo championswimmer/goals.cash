@@ -40,8 +40,9 @@ export function getRandomAssetColor(): string {
   const hue = 170 + Math.floor(Math.random() * 30); // Teal cyan hue 170-200
   const saturation = 60 + Math.floor(Math.random() * 20); // 60-80%
   const lightness = 30 + Math.floor(Math.random() * 30); // 30-60%
+  const alpha = 0.5 + Math.floor(Math.random() * 0.2); // 0.5-0.7
 
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  return `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
 }
 
 /**
@@ -55,6 +56,7 @@ export function getRandomLiabilityColor(): string {
   const hue = 30 + Math.floor(Math.random() * 30); // Orange hue 30-60
   const saturation = 60 + Math.floor(Math.random() * 20); // 60-80%
   const lightness = 30 + Math.floor(Math.random() * 30); // 30-60%
+  const alpha = 0.5 + Math.floor(Math.random() * 0.2); // 0.5-0.7
 
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  return `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
 }

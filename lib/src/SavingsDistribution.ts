@@ -1,7 +1,5 @@
 import { Asset } from ".";
 
-type SavingsAssetMap = Array<{ asset: Asset, percentage: number }>
-
 /**
  * This defines how surplus income (i.e. savings) is distributed across assets.
  * Since there can be multiple assets in the portfolio, the surplus income can be distributed among them.
@@ -9,19 +7,19 @@ type SavingsAssetMap = Array<{ asset: Asset, percentage: number }>
 export class SavingsDistribution {
   startYear: number;
   endYear: number;
-  private _savingsAssetMap!: SavingsAssetMap;
+  private _savingsAssetMap!: Array<{ asset: Asset, percentage: number }>;
 
-  public get savingsAssetMap(): SavingsAssetMap {
+  public get savingsAssetMap(): Array<{ asset: Asset, percentage: number }> {
     return this._savingsAssetMap;
   }
 
-  constructor(startYear: number, endYear: number, savingsAssetMap: SavingsAssetMap) {
+  constructor(startYear: number, endYear: number, savingsAssetMap: Array<{ asset: Asset, percentage: number }>) {
     this.startYear = startYear;
     this.endYear = endYear;
     this.setSavingsAssetMap(savingsAssetMap);
   }
 
-  private static is100PercentMapped(savingsAssetMap: SavingsAssetMap): boolean {
+  private static is100PercentMapped(savingsAssetMap: Array<{ asset: Asset, percentage: number }>): boolean {
     const totalSavings = savingsAssetMap.reduce((acc, curr) => acc + curr.percentage, 0);
     return totalSavings === 100;
   }

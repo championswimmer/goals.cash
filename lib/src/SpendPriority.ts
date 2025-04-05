@@ -1,7 +1,5 @@
 import { Asset } from ".";
 
-type SpendPriorityMap = Array<{ priority: number, asset: Asset }>
-
 /**
  * This defines how deficit income is spent from assets
  * Since there can be multiple assets in the portfolio, 
@@ -16,15 +14,15 @@ type SpendPriorityMap = Array<{ priority: number, asset: Asset }>
 export class SpendPriority {
   startYear: number;
   endYear: number; 
-  spendPriorityMap!: SpendPriorityMap;
+  spendPriorityMap!: Array<{ priority: number, asset: Asset }>;
 
-  constructor(startYear: number, endYear: number, spendPriorityMap: SpendPriorityMap) {
+  constructor(startYear: number, endYear: number, spendPriorityMap: Array<{ priority: number, asset: Asset }>) {
     this.startYear = startYear;
     this.endYear = endYear;
     this.setSpendPriorityMap(spendPriorityMap);
   }
 
-  private setSpendPriorityMap(spendPriorityMap: SpendPriorityMap): void {
+  private setSpendPriorityMap(spendPriorityMap: Array<{ priority: number, asset: Asset }>): void {
     // check all assets have startYear <= this.startYear and are liquid
     for (const { priority, asset } of spendPriorityMap) {
       if (this.startYear < asset.initYear) {

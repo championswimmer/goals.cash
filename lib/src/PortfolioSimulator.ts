@@ -57,6 +57,18 @@ export class PortfolioSimulator {
       // calculate net income
       const netIncome = grossIncome - grossExpenses;
       this._portfolio.netFlow.updatePlotPoint(year, netIncome);
+
+      // case: net income is positive
+      if (netIncome >= 0) {
+        // split it by the ratio available in savingsDistribution and update those assets
+        savingsDistribution.savingsAssetMap
+          .filter(({ asset }) => asset.initYear < year) // inflow only into assets that have started
+          .forEach(({ asset, percentage }) => {
+            console.log(year, asset.name, percentage, asset);
+            const inflowToAsset = (percentage * netIncome) / 100;
+            asset.updatePlotPoint(year, inflowToAsset);
+          });
+      }
     }
   }
 

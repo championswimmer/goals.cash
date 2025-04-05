@@ -12,20 +12,20 @@ import {
 
 import Chart, { ChartType } from "chart.js/auto";
 
-const pb = new Portfolio.Builder(2015, 2075, new Date().getFullYear(), 30)
+const pb = new Portfolio.Builder(2015, 2035, new Date().getFullYear(), 30)
 
-const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2015, 100000, 0.05)
+const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2015, 10000, 0.05)
 pb.addAsset(savingsAsset)
 // pb.addLiability(new Liability("Mortgage", "red", 2015, 200000, 0.03))
 pb.addIncome(new Income("Salary", colors.getRandomIncomeColor(), 2020, 2030, 50000, 0.05))
 pb.addIncome(new Income("Side Hustle", colors.getRandomIncomeColor(), 2020, 2030, 10000, 0.05))
 pb.addExpense(new Expense("Rent", colors.getRandomExpenseColor(), 2025, 2030, 10000, 0.03))
 
-pb.addSavingsDistribution(new SavingsDistribution(2015, 2075, [
+pb.addSavingsDistribution(new SavingsDistribution(2015, 2035, [
   { asset: savingsAsset, percentage: 100 },
 ]))
 
-pb.addSpendPriority(new SpendPriority(2015, 2075, [
+pb.addSpendPriority(new SpendPriority(2015, 2035, [
   { asset: savingsAsset, priority: 1}
 ]))
 
@@ -48,26 +48,38 @@ const portfolioChart = new Chart(ctx, {
         label: portfolio.netFlow.name,
         type: portfolio.netFlow.chart,
         backgroundColor: portfolio.netFlow.color,
-        data: portfolio.netFlow.getPlotPoints(2015, 2075).map((point) => point.value),
+        data: portfolio.netFlow.getPlotPoints(2015, 2035).map((point) => point.value),
+        stack: "net",
       },
       // incomes
       ...(portfolio.incomes.map(income => ({
         label: income.name,
         type: income.chart,
         backgroundColor: income.color,
-        data: income.getPlotPoints(2015, 2075).map((point) => point.value),
+        data: income.getPlotPoints(2015, 2035).map((point) => point.value),
+        stack: "flow",
       }))),
       // expenses
       ...(portfolio.expenses.map(expense => ({
         label: expense.name,
         type: expense.chart,
         backgroundColor: expense.color,
-        data: expense.getPlotPoints(2015, 2075).map((point) => -point.value),
+        data: expense.getPlotPoints(2015, 2035).map((point) => -point.value),
+        stack: "flow",
       }))),
-      
+      // assets
+      ...(portfolio.assets.map(asset => ({
+        label: asset.name,
+        type: asset.chart === "area" ? "line" : "line" as "line",
+        backgroundColor: asset.color,
+        fill: asset.chart === "area", // TODO: fill to last index
+        data: asset.getPlotPoints(2015, 2035).map((point) => point.value),
+        stack: "pool",
+      }))),
     ],
   },
   options: {
+    locale: "en-US",
     elements: {
       line: {
         cubicInterpolationMode: "monotone",
