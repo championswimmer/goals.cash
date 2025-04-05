@@ -78,6 +78,12 @@ export class PortfolioValidator {
    * - Entire portfolio is covered by savings distributions
    */
   validateSavingsDistributionList() {
+    if (this.portfolio.assets.length === 0) {
+      // noop, nothing to do
+      console.warn("No assets defined, skipping savings distribution validation");
+      return;
+    }
+
     const distributions = this.portfolio.savingsDistributions;
 
     if (distributions.length === 0) {
@@ -119,6 +125,12 @@ export class PortfolioValidator {
    * - Entire portfolio is covered by spend priorities
    */
   validateSpendPriorityList() {
+    if (this.portfolio.assets.length === 0) {
+      // noop, nothing to do
+      console.warn("No assets defined, skipping spend priority validation");
+      return;
+    }
+
     const spendPriorities = this.portfolio.spendPriorities;
 
     if (spendPriorities.length === 0) {
