@@ -18,32 +18,39 @@ const e = 2040
 
 const pb = new Portfolio.Builder(s, e, currentYear, 30)
 
-const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2025, 30000, 0.03)
-savingsAsset.extrapolateFromStart(2020, 0)
-savingsAsset.spendCutoff = 15000
+const cashAsset = new Asset("Cash", colors.getRandomAssetColor(), 2025, 30000, 0.03)
+cashAsset.extrapolateFromStart(2020, 0)
+cashAsset.spendCutoff = 25000
 const stocksAsset = new Asset("Stocks", colors.getRandomAssetColor(), 2025, 100000, 0.07)
 stocksAsset.extrapolateFromStart(2020, 0)
 stocksAsset.spendCutoff = 20000
-pb.addAsset(savingsAsset)
+pb.addAsset(cashAsset)
 pb.addAsset(stocksAsset)
 // pb.addLiability(new Liability("Mortgage", "red", 2015, 200000, 0.03))
 
-const salaryIncome = new Income("Salary", colors.getRandomIncomeColor(), 2024, 2034, 85000, 0.05)
+const salaryIncome = new Income("Salary", colors.getRandomIncomeColor(), 2025, 2035, 85000, 0.05)
+const rsuIncome = new Income("RSU", colors.getRandomIncomeColor(), 2025, 2030, 67000, 0.05)
 // salaryIncome.extrapolateFromStart(2015, 0)
-const sideHustleIncome = new Income("Side Hustle", colors.getRandomIncomeColor(), 2023, 2030, 10000, 0.02)
+const sideHustleIncome = new Income("Side Hustle", colors.getRandomIncomeColor(), 2023, 2035, 8000, 0.02)
 // sideHustleIncome.extrapolateFromStart(2015, 0)
 pb.addIncome(salaryIncome)
+pb.addIncome(rsuIncome)
 pb.addIncome(sideHustleIncome)
 
-const rentExpense = new Expense("Rent", colors.getRandomExpenseColor(), currentYear, 2040, 47000, 0.04)
+const rentExpense = new Expense("Rent", colors.getRandomExpenseColor(), currentYear, 2040, 3000 * 12, 0.04)
+const livingExpense = new Expense("Living", colors.getRandomExpenseColor(), currentYear, 2040, 2500 * 12, 0.04)
+const travelExpense = new Expense("Travel", colors.getRandomExpenseColor(), currentYear, 2040, 25000, 0)
 pb.addExpense(rentExpense)
+pb.addExpense(livingExpense)
+pb.addExpense(travelExpense)
+
 pb.addSavingsDistribution(new SavingsDistribution(2025, 2040, [
-  { asset: savingsAsset, percentage: 30 },
+  { asset: cashAsset, percentage: 30 },
   { asset: stocksAsset, percentage: 70 },
 ]))
 
 pb.addSpendPriority(new SpendPriority(2025, 2040, [
-  { asset: savingsAsset, priority: 1},
+  { asset: cashAsset, priority: 1},
   { asset: stocksAsset, priority: 2},
 ]))
 
