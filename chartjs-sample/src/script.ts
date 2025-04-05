@@ -4,8 +4,8 @@ import {
   Portfolio,
   Income,
   Expense,
+  colors
 } from "@goalscash/lib/src";
-import { getRandomAssetColor, getRandomExpenseColor, getRandomIncomeColor } from "@goalscash/lib/src/commons/colors";
 
 import Chart, { ChartType } from "chart.js/auto";
 
@@ -13,9 +13,9 @@ const pb = new Portfolio.Builder(2015, 2075, new Date().getFullYear(), 30)
 
 // pb.addAsset(new Asset("Savings", "blue", 2015, 100000, 0.05))
 // pb.addLiability(new Liability("Mortgage", "red", 2015, 200000, 0.03))
-pb.addIncome(new Income("Salary", getRandomIncomeColor(), 2020, 2030, 50000, 0.05))
-pb.addIncome(new Income("Side Hustle", getRandomIncomeColor(), 2020, 2030, 10000, 0.05))
-pb.addExpense(new Expense("Rent", getRandomExpenseColor(), 2025, 2030, 10000, 0.03))
+pb.addIncome(new Income("Salary", colors.getRandomIncomeColor(), 2020, 2030, 50000, 0.05))
+pb.addIncome(new Income("Side Hustle", colors.getRandomIncomeColor(), 2020, 2030, 10000, 0.05))
+pb.addExpense(new Expense("Rent", colors.getRandomExpenseColor(), 2025, 2030, 10000, 0.03))
 
 const portfolio = pb.build()
 

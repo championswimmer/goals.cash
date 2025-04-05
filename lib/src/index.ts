@@ -1,3 +1,5 @@
+import { getRandomAssetColor, getRandomExpenseColor, getRandomIncomeColor, getRandomLiabilityColor } from "./commons/colors"
+
 export {
   MoneyPool,
   MoneyStream,
@@ -24,3 +26,11 @@ export {
   ErrorSpendPriorityGap,
   ErrorSpendPriorityOverlap
 } from "./commons/errors"
+
+
+export const colors = {
+  getRandomAssetColor,
+  getRandomExpenseColor,
+  getRandomIncomeColor,
+  getRandomLiabilityColor,
+}

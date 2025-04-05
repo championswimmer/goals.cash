@@ -1,3 +1,4 @@
+import { ErrorPortfolioSimulationIncomplete } from '../commons/errors';
 import { extrapolatePlotPointsFromStart, populatePlotPointsWithPastData } from '../commons/plot-point-utils';
 import { MoneyPool, PlotPoint } from '../commons/types';
 
@@ -33,41 +34,25 @@ export class Asset implements MoneyPool {
   }
 
   getPlotPoints(startYear: number, endYear: number): PlotPoint[] {
-    // Ensure we have all the plot points calculated
-    this.calculatePlotPoints(startYear, endYear);
-
-    const plotPoints: PlotPoint[] = [];
-
-    for (let year = startYear; year <= endYear; year++) {
-      plotPoints.push({
-        year,
-        value: this._plotPoints.get(year) || 0
-      });
-    }
-
-    return plotPoints;
+    return Array.from({ length: endYear - startYear + 1 }, (_, i) => this.getPlotPoint(startYear + i));
   }
 
   getPlotPoint(year: number): PlotPoint {
-    // Ensure we have all the plot points calculated
-    this.calculatePlotPoints(Math.min(year, this.initYear), Math.max(year, this.initYear));
+    // if before init year, return existing data or 0  
+    if (year < this.initYear) {
+      return {
+        year,
+        value: this._plotPoints.get(year) || 0
+      };
+    }
+    // check if year is in plot points
+    if (!this._plotPoints.has(year)) {
+      throw new ErrorPortfolioSimulationIncomplete(`Plot point for year ${year} not found. Run portfolio.simulate()`);
+    }
     return {
       year,
       value: this._plotPoints.get(year) || 0
     };
-  }
-
-  private calculatePlotPoints(startYear: number, endYear: number) {
-
-    // Calculate plot points for years after initYear
-    for (let year = this.initYear + 1; year <= endYear; year++) {
-      // If we already have the value, skip calculation
-      if (this._plotPoints.has(year)) continue;
-
-      const prevYearValue = this._plotPoints.get(year - 1) || 0;
-      const thisYearValue = prevYearValue * (1 + this.growthRate);
-      this._plotPoints.set(year, thisYearValue);
-    }
   }
 
   extrapolateFromStart(startYear: number, startValue: number = 0): MoneyPool {

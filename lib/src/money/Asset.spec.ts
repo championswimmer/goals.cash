@@ -43,9 +43,9 @@ describe("Asset", () => {
 
     asset.extrapolateFromStart(2015, 500);
 
-    const plotPoints = asset.getPlotPoints(2015, 2025);
+    const plotPoints = asset.getPlotPoints(2015, 2020);
 
-    expect(plotPoints.length).toBe(11);
+    expect(plotPoints.length).toBe(6);
 
     expect(plotPoints[0].year).toBe(2015);
     expect(plotPoints[0].value).toBe(500);
@@ -59,9 +59,9 @@ describe("Asset", () => {
 
     asset.populatePastValues({ year: 2015, value: 400 }, { year: 2017, value: 600 });
 
-    const plotPoints = asset.getPlotPoints(2015, 2025);
+    const plotPoints = asset.getPlotPoints(2015, 2020);
 
-    expect(plotPoints.length).toBe(11);
+    expect(plotPoints.length).toBe(6);
 
     expect(plotPoints[0].year).toBe(2015);
     expect(plotPoints[0].value).toBe(400);

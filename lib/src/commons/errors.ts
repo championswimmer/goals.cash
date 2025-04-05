@@ -39,3 +39,9 @@ export class ErrorSpendPriorityOverlap extends Error {
   }
 }
 
+export class ErrorPortfolioSimulationIncomplete extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ERR_PORTFOLIO_SIMULATION_INCOMPLETE";
+  }
+}
