@@ -2,12 +2,19 @@ import { describe, it, expect } from "@jest/globals";
 import { Asset } from "./Asset";
 import { getRandomAssetColor } from "../commons/colors";
 
+
 describe("Asset", () => {
+
+  function simulateAssetData(asset: Asset, startYear: number, endYear: number) {
+    for (let year = Math.min(startYear, asset.initYear + 1); year <= endYear; year++) {
+      asset.updatePlotPoint(year, 0);
+    }
+  }
   it("should create an asset", () => {
     const asset = new Asset("Asset", getRandomAssetColor(), 2020, 1000, 0.05);
 
     expect(asset.name).toBe("Asset");
-
+    simulateAssetData(asset, 2021, 2025);
     const plotPoints = asset.getPlotPoints(2020, 2025);
 
     expect(plotPoints.length).toBe(6);
@@ -24,6 +31,7 @@ describe("Asset", () => {
   it("should not extrapolate by default", () => {
     const asset = new Asset("Asset", getRandomAssetColor(), 2020, 1000, 0.05);
 
+    simulateAssetData(asset, 2021, 2025);
     const plotPoints = asset.getPlotPoints(2015, 2025);
 
     expect(plotPoints.length).toBe(11);
