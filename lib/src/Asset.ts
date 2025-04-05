@@ -4,6 +4,12 @@ export class Asset implements MoneyPool {
   type: "pool" = "pool";
   chart: "area" = "area";
   poolType: "asset" = "asset";
+  isLiquid: boolean;
+  /**
+   * If asset depletes below this, then do not spend any more from it
+   * Unless no other assets are available
+   */
+  spendCutoff: number;
 
   name: string;
   color: string;
@@ -13,13 +19,14 @@ export class Asset implements MoneyPool {
 
   private _plotPoints: Map<number, number> = new Map();
 
-  constructor(name: string, color: string, initYear: number, initValue: number, growthRate: number) {
+  constructor(name: string, color: string, initYear: number, initValue: number, growthRate: number, isLiquid: boolean = true, spendCutoff: number = 0) {
     this.name = name;
     this.color = color;
     this.initYear = initYear;
     this.initValue = initValue;
     this.growthRate = growthRate;
-
+    this.isLiquid = isLiquid;
+    this.spendCutoff = spendCutoff;
     // Initialize the first plot point
     this._plotPoints.set(initYear, initValue);
   }
@@ -62,7 +69,7 @@ export class Asset implements MoneyPool {
     }
   }
 
-  extrapolateFromStart(startYear: number, startValue: number): MoneyPool {
+  extrapolateFromStart(startYear: number, startValue: number = 0): MoneyPool {
     if (startYear >= this.initYear) {
       throw new Error("Start year must be less than init year");
     }
@@ -85,6 +92,35 @@ export class Asset implements MoneyPool {
 
     // Ensure initYear has its original value
     this._plotPoints.set(this.initYear, this.initValue);
+
+    return this;
+  }
+
+  // TODO: commonize with Liability.populatePastValues
+  populatePastValues(...values: PlotPoint[]): MoneyPool {
+    // add the initYear to the values
+    values.push({ year: this.initYear, value: this.initValue });
+
+    values.sort((a, b) => a.year - b.year).forEach((value, index) => {
+      if (value.year > this.initYear) {
+        // TODO: custom error
+        throw new Error("Value year must be less than init year");
+      }
+
+      // interpolate values for missing years if there is a gap
+      if (index > 0 && values[index - 1].year < value.year - 1) {
+        const prevValue = values[index - 1].value;
+        const yearDiff = value.year - values[index - 1].year;
+        const valueIncrement = (value.value - prevValue) / yearDiff;
+        for (let year = values[index - 1].year + 1; year < value.year; year++) {
+          this._plotPoints.set(year, prevValue + valueIncrement * (year - values[index - 1].year));
+        }
+      }
+
+      // set the value for the year
+      this._plotPoints.set(value.year, value.value);
+    })
+
 
     return this;
   }

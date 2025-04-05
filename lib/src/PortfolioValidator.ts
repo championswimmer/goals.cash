@@ -1,4 +1,4 @@
-import { Asset, Expense, Income, Liability, SavingsDistribution } from ".";
+import { Asset, Expense, Income, Liability, SavingsDistribution, SpendPriority } from ".";
 import { Portfolio } from "./Portfolio";
 
 export class ErrorOutsidePortfolioBounds extends Error {
@@ -19,6 +19,20 @@ export class ErrorSavingsDistributionOverlap extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ERR_SAVINGS_DISTRIBUTION_OVERLAP";
+  }
+}
+
+export class ErrorSpendPriorityGap extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ERR_SPEND_PRIORITY_GAP";
+  }
+}
+
+export class ErrorSpendPriorityOverlap extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ERR_SPEND_PRIORITY_OVERLAP";
   }
 }
 
@@ -78,11 +92,24 @@ export class PortfolioValidator {
   }
 
   /**
+   * Validates a single spend priority to be within the bounds of the portfolio
+   * @param spendPriority 
+   */
+  validateSpendPriority(spendPriority: SpendPriority) {
+    let valid = spendPriority.startYear >= this.portfolio.startYear;
+    valid &&= spendPriority.endYear <= this.portfolio.endYear;
+    valid &&= spendPriority.endYear >= spendPriority.startYear;
+    if (!valid) {
+      throw new ErrorOutsidePortfolioBounds(`Spend priority ${spendPriority.startYear} - ${spendPriority.endYear} is outside the portfolio bounds`);
+    }
+  }
+
+  /**
    * Validates that the entire savings distribution list is complete and consistent: 
    * - No overlapping savings distributions 
    * - Entire portfolio is covered by savings distributions
    */
-  validateSavingsDistributions() {
+  validateSavingsDistributionList() {
     const distributions = this.portfolio.savingsDistributions;
 
     if (distributions.length === 0) {
@@ -109,12 +136,54 @@ export class PortfolioValidator {
         // Check for overlap
         if (current.endYear >= next.startYear) {
           throw new ErrorSavingsDistributionOverlap(`Overlapping savings distributions detected at year ${next.startYear}`);
-        } else {
+        } else { // gap
           throw new ErrorSavingsDistributionGap(`Gap detected between savings distributions at year ${current.endYear}`);
         }
       }
 
     }
+  }
+
+
+  /**
+   * Validates that the entire spend priority list is complete and consistent: 
+   * - No overlapping spend priorities
+   * - Entire portfolio is covered by spend priorities
+   */
+  validateSpendPriorityList() {
+    const spendPriorities = this.portfolio.spendPriorities;
+
+    if (spendPriorities.length === 0) {
+      throw new ErrorSpendPriorityGap("No spend priorities defined");
+    }
+
+    // Check that first spend priority starts at beginning of first asset
+    if (spendPriorities[0].startYear !== this.portfolio.assets[0].initYear) {
+      throw new ErrorSpendPriorityGap("First spend priority must start at beginning of first asset");
+    }
+
+    // Check that last spend priority ends at portfolio end 
+    if (spendPriorities[spendPriorities.length - 1].endYear !== this.portfolio.endYear) {
+      throw new ErrorSpendPriorityGap("Last spend priority must end at portfolio end year");
+    }
+
+    // Check for gaps and overlaps between spend priorities
+    for (let i = 0; i < spendPriorities.length - 1; i++) {
+      const current = spendPriorities[i];
+      const next = spendPriorities[i + 1];
+
+      // Check for gap and overlap
+      if (current.endYear + 1 !== next.startYear) {
+        // Check for overlap
+        if (current.endYear >= next.startYear) {
+          throw new ErrorSpendPriorityOverlap(`Overlapping spend priorities detected at year ${next.startYear}`);
+        } else { // gap
+          throw new ErrorSpendPriorityGap(`Gap detected between spend priorities at year ${current.endYear}`);
+        }
+      }
+    }
+
+
   }
 
 }

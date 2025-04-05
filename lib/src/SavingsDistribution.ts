@@ -9,7 +9,11 @@ type SavingsAssetMap = Array<{ asset: Asset, percentage: number }>
 export class SavingsDistribution {
   startYear: number;
   endYear: number;
-  savingsAssetMap!: SavingsAssetMap;
+  private _savingsAssetMap!: SavingsAssetMap;
+
+  public get savingsAssetMap(): SavingsAssetMap {
+    return this._savingsAssetMap;
+  }
 
   constructor(startYear: number, endYear: number, savingsAssetMap: SavingsAssetMap) {
     this.startYear = startYear;
@@ -23,11 +27,15 @@ export class SavingsDistribution {
   }
 
   private setSavingsAssetMap(savingsAssetMap: Array<{ asset: Asset, percentage: number }>): void {
-    // check all assets have startYear <= this.startYear
+    // check all assets have startYear <= this.startYear and are liquid
     for (const { asset, percentage } of savingsAssetMap) {
       if (this.startYear < asset.initYear) {
         // TODO: add error class
         throw new Error("Cannot distribute savings for an asset that has not started yet");
+      }
+      if (!asset.isLiquid) {
+        // TODO: add error class
+        throw new Error("Cannot distribute savings to an asset that is not liquid");
       }
     }
 
@@ -37,6 +45,6 @@ export class SavingsDistribution {
       throw new Error("Savings distribution must be 100% mapped");
     }
 
-    this.savingsAssetMap = savingsAssetMap;
+    this._savingsAssetMap = savingsAssetMap;
   }
 }

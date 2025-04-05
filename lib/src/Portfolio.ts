@@ -1,4 +1,4 @@
-import { Asset, Expense, Income, Liability, SavingsDistribution } from ".";
+import { Asset, Expense, Income, Liability, SavingsDistribution, SpendPriority } from ".";
 import { PortfolioValidator } from "./PortfolioValidator";
 
 export class Portfolio {
@@ -14,7 +14,8 @@ export class Portfolio {
   incomes: Income[] = [];
   expenses: Expense[] = [];
   savingsDistributions: SavingsDistribution[] = [];
-
+  spendPriorities: SpendPriority[] = [];
+  
   constructor(startYear: number, endYear: number, currentYear: number, currentAge: number) {
     this.startYear = startYear;
     this.endYear = endYear;
@@ -56,6 +57,31 @@ export class Portfolio {
     this.savingsDistributions.push(savingsDistribution);
     // re-sort the savings distributions by start year 
     this.savingsDistributions.sort((a, b) => a.startYear - b.startYear);
+  }
+
+  addSpendPriority(spendPriority: SpendPriority) {
+    this.validator.validateSpendPriority(spendPriority);
+    this.spendPriorities.push(spendPriority);
+    // re-sort the spend priorities by start year 
+    this.spendPriorities.sort((a, b) => a.startYear - b.startYear);
+  }
+
+  getSavingsDistribution(year: number): SavingsDistribution {
+    // find the savings distribution that has the year in its range
+    const savingsDistribution = this.savingsDistributions.find(savingsDistribution => year >= savingsDistribution.startYear && year <= savingsDistribution.endYear);
+    if (!savingsDistribution) {
+      throw new Error("No savings distribution found for the year");
+    }
+    return savingsDistribution;
+  }
+
+  getSpendPriority(year: number): SpendPriority {
+    // find the spend priority that has the year in its range
+    const spendPriority = this.spendPriorities.find(spendPriority => year >= spendPriority.startYear && year <= spendPriority.endYear);
+    if (!spendPriority) {
+      throw new Error("No spend priority found for the year");
+    }
+    return spendPriority;
   }
  
 }

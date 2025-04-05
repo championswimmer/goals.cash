@@ -43,7 +43,12 @@ export interface MoneyPlottable {
 /**
  * A pool of money (e.g. assets, liabilities, etc.) 
  * Pools start with an initial value and grow or shrink over time
- * Pools have a start year, but no end year
+ * Pools always exist from start to end of portfolio 
+ * Pools are initiated with a currentValue for a currentYear
+ * Values from startYear to currentYear can be - 
+ *  1. interpolated between a startValue and currentValue
+ *  2. set to zero for the years between startYear and currentYear (default)
+ *  3. manually fed values for the years between startYear and currentYear
  */
 export interface MoneyPool extends MoneyPlottable {
   type: "pool"
@@ -53,8 +58,17 @@ export interface MoneyPool extends MoneyPlottable {
   /**
    * Extrapolate the pool's value from startValue at the startYear to the initial value at the initYear
    * @param startYear The start year of the portfolio
+   * @param startValue The value of the pool at the start year (defaults to 0)
+   * @returns this (for chaining)
    */
-  extrapolateFromStart(startYear: number, startValue: number): MoneyPool
+  extrapolateFromStart(startYear: number, startValue?: number): MoneyPool
+
+  /**
+   * Populate the past values of the pool
+   * @param values The values to populate the past values with
+   * @returns this (for chaining)
+   */
+  populatePastValues(...values: PlotPoint[]): MoneyPool
 }
 
 /**
@@ -78,4 +92,3 @@ export interface MoneyStream extends MoneyPlottable {
    */
   extrapolateFromStart(startYear: number, startValue: number): MoneyStream
 }
-

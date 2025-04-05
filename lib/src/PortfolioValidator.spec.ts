@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import { Asset, ErrorOutsidePortfolioBounds, ErrorSavingsDistributionGap, ErrorSavingsDistributionOverlap, Expense, Income, Liability, Portfolio, PortfolioValidator, SavingsDistribution } from ".";
+import {Asset,ErrorOutsidePortfolioBounds, ErrorSavingsDistributionGap, ErrorSavingsDistributionOverlap, ErrorSpendPriorityGap, ErrorSpendPriorityOverlap, Expense, Income, Liability, Portfolio, PortfolioValidator, SavingsDistribution, SpendPriority} from ".";
 import { getRandomAssetColor, getRandomExpenseColor, getRandomIncomeColor, getRandomLiabilityColor } from "./colors";
 
 describe("PortfolioValidator", () => {
@@ -71,7 +71,7 @@ describe("PortfolioValidator", () => {
 
 
       expect(() => {
-        validator.validateSavingsDistributions()
+        validator.validateSavingsDistributionList()
       }).toThrow(ErrorSavingsDistributionGap)
     })
 
@@ -102,7 +102,7 @@ describe("PortfolioValidator", () => {
 
 
       expect(() => {
-        validator.validateSavingsDistributions()
+        validator.validateSavingsDistributionList()
       }).toThrow("First savings distribution must start at beginning of first asset")
     })
 
@@ -141,7 +141,7 @@ describe("PortfolioValidator", () => {
       ))
 
       expect(() => {
-        validator.validateSavingsDistributions()
+        validator.validateSavingsDistributionList()
       }).toThrow("Last savings distribution must end at portfolio end year")
     })
 
@@ -190,7 +190,7 @@ describe("PortfolioValidator", () => {
       ))
 
       expect(() => {
-        validator.validateSavingsDistributions()
+        validator.validateSavingsDistributionList()
       }).toThrow(ErrorSavingsDistributionGap)
     })
 
@@ -239,8 +239,210 @@ describe("PortfolioValidator", () => {
       ))
 
       expect(() => {
-        validator.validateSavingsDistributions()
+        validator.validateSavingsDistributionList()
       }).toThrow(ErrorSavingsDistributionOverlap)
+    })
+
+  })
+
+  describe("SpendPriorities", () => {
+
+    it("should invalidate adding spend priority outside portfolio bounds", () => {
+      const portfolio = new Portfolio(
+        2020,
+        2075,
+        2025,
+        30
+      )
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      portfolio.addAsset(asset1)
+
+      const validator = new PortfolioValidator(portfolio)
+      expect(() => {
+        portfolio.addSpendPriority(new SpendPriority(
+          2019,
+          2025,
+          [{
+            priority: 0,
+            asset: asset1
+          }]
+        ))
+      }).toThrow(Error)
+    })
+
+    it("should invalidate missing spend priority", () => {
+      const portfolio = new Portfolio(
+        2020,
+        2075,
+        2025,
+        30
+      )
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      portfolio.addAsset(asset1)
+
+      const validator = new PortfolioValidator(portfolio)
+
+      expect(() => {
+        validator.validateSpendPriorityList()
+      }).toThrow(ErrorSpendPriorityGap)
+    })
+
+    it("should invalidate spend priority not at the beginning of the first asset", () => {
+      const portfolio = new Portfolio(
+        2020,
+        2075,
+        2025,
+        30
+      )
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      portfolio.addAsset(asset1)
+
+      const validator = new PortfolioValidator(portfolio)
+
+      // now add a valid spend priority, but not at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2022,
+        2025,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      expect(() => {
+        validator.validateSpendPriorityList()
+      }).toThrow("First spend priority must start at beginning of first asset")
+    })
+
+    it("should invalidate spend priority not upto end of portfolio", () => {
+      const portfolio = new Portfolio(
+        2020,
+        2075,
+        2025,
+        30
+      )
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      portfolio.addAsset(asset1)
+
+      const validator = new PortfolioValidator(portfolio)
+
+      // now add a valid spend priority, but not at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2022,
+        2025,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      // now add a valid spend priority at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2020,
+        2021,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      expect(() => {
+        validator.validateSpendPriorityList()
+      }).toThrow("Last spend priority must end at portfolio end year")
+    })
+
+    it("should invalidate spend priority with gaps", () => {
+      const portfolio = new Portfolio(
+        2020,
+        2075,
+        2025,
+        30
+      )
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      portfolio.addAsset(asset1)
+
+      const validator = new PortfolioValidator(portfolio)
+
+      // now add a valid spend priority, but not at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2022,
+        2025,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      // now add a valid spend priority at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2020,
+        2021,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      // now add a valid spend priority that ends at the end of the portfolio
+      portfolio.addSpendPriority(new SpendPriority(
+        2027,
+        2075,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      expect(() => {
+        validator.validateSpendPriorityList()
+      }).toThrow(ErrorSpendPriorityGap)
+    })
+
+    it("should invalidate spend priority with overlaps", () => {
+      const portfolio = new Portfolio(
+        2020,
+        2075,
+        2025,
+        30
+      )
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      portfolio.addAsset(asset1)
+
+      const validator = new PortfolioValidator(portfolio)
+
+      // now add a valid spend priority, but not at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2022,
+        2025,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      // now add a valid spend priority at the beginning of the first asset
+      portfolio.addSpendPriority(new SpendPriority(
+        2020,
+        2021,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      // now add a valid spend priority that ends at the end of the portfolio
+      portfolio.addSpendPriority(new SpendPriority(
+        2025,
+        2075,
+        [{
+          priority: 0,
+          asset: asset1
+        }]
+      ))
+
+      expect(() => {
+        validator.validateSpendPriorityList()
+      }).toThrow(ErrorSpendPriorityOverlap)
     })
 
   })

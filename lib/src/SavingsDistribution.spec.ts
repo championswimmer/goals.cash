@@ -3,10 +3,9 @@ import { Asset, SavingsDistribution } from "./";
 import { getRandomAssetColor } from "./colors";
 
 describe("SavingsDistribution", () => {
+  const cashSavings = new Asset("Cash Savings", getRandomAssetColor(), 2015, 100000, 0.05);
+  const stocks = new Asset("Stocks", getRandomAssetColor(), 2018, 200000, 0.12);
   it("should throw an error if the savings distribution is not 100% mapped", () => {
-    const cashSavings = new Asset("Cash Savings", getRandomAssetColor(), 2015, 100000, 0.05);
-    const stocks = new Asset("Stocks", getRandomAssetColor(), 2018, 200000, 0.12);
-
     expect(() => {
       const savingsDistribution = new SavingsDistribution(2020, 2030, [
         { asset: cashSavings, percentage: 20 },
@@ -16,9 +15,6 @@ describe("SavingsDistribution", () => {
   });
 
   it("should throw an error if the asset is not started yet", () => {
-    const cashSavings = new Asset("Cash Savings", getRandomAssetColor(), 2015, 100000, 0.05);
-    const stocks = new Asset("Stocks", getRandomAssetColor(), 2018, 200000, 0.12);
-
     expect(() => {
       const savingsDistribution = new SavingsDistribution(2015, 2030, [
         { asset: cashSavings, percentage: 20 },
@@ -26,6 +22,6 @@ describe("SavingsDistribution", () => {
       ]);
     }).toThrow("Cannot distribute savings for an asset that has not started yet");
   });
-  
-  
+
+
 });

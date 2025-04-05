@@ -52,10 +52,27 @@ describe("Asset", () => {
 
     expect(plotPoints[1].year).toBe(2016);
     expect(plotPoints[1].value).toBe(600);
+  })
 
+  it("should populate past values which are manually fed", () => {
+    const asset = new Asset("Asset", getRandomAssetColor(), 2020, 1000, 0.05);
 
+    asset.populatePastValues({ year: 2015, value: 400 }, { year: 2017, value: 600 });
 
+    const plotPoints = asset.getPlotPoints(2015, 2025);
 
+    expect(plotPoints.length).toBe(11);
 
+    expect(plotPoints[0].year).toBe(2015);
+    expect(plotPoints[0].value).toBe(400);
+
+    expect(plotPoints[1].year).toBe(2016);
+    expect(plotPoints[1].value).toBe(500);
+
+    expect(plotPoints[2].year).toBe(2017);
+    expect(plotPoints[2].value).toBe(600);
+
+    expect(plotPoints[3].year).toBe(2018);
+    expect(plotPoints[3].value).toBeCloseTo(733.33);
   })
 });

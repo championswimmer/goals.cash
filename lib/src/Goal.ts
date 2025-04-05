@@ -12,6 +12,7 @@ export class Goal {
   term: number;
   downPayment: number;
 
+  // TODO: also have an _asset (if it's a house, for example)
   private _liability: Liability | null = null;
   private _expense!: Expense;
 
