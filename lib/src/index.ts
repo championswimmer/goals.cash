@@ -3,7 +3,7 @@ export {
   MoneyStream,
   MoneyPlottable,
   PlotPoint,
-} from "./types"
+} from "./commons/types"
 
 export { Asset } from "./Asset"
 export { Liability } from "./Liability"

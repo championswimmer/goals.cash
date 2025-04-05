@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import { Asset, SavingsDistribution, SpendPriority } from "./";
-import { getRandomAssetColor } from "./colors";
+import { getRandomAssetColor } from "./commons/colors";
 
 
 describe("SpendPriority", () => {

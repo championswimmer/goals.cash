@@ -1,5 +1,5 @@
-import { ErrorUnsupportedExtrapolation } from './errors';
-import { MoneyStream, PlotPoint } from './types';
+import { ErrorUnsupportedExtrapolation } from './commons/errors';
+import { MoneyStream, PlotPoint } from './commons/types';
 
 class ErrorExpenseBounds extends Error {
   constructor(message: string) {
@@ -66,7 +66,7 @@ export class Expense implements MoneyStream {
     return plotPoints.find(point => point.year === year) || { year, value: 0 };
   }
 
-  extrapolateFromStart(startYear: number, startValue: number): MoneyStream {
+  extrapolateFromStart(startYear: number, startValue: number = 0): Expense {
     // noop - expenses are not extrapolated
     throw new ErrorUnsupportedExtrapolation("Expenses are not extrapolated");
   }

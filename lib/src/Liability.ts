@@ -1,5 +1,6 @@
 import { Expense } from './Expense';
-import { MoneyPool, PlotPoint } from './types';
+import { populatePlotPointsWithPastData } from './commons/plot-point-utils';
+import { MoneyPool, PlotPoint } from './commons/types';
 
 export class Liability implements MoneyPool {
   type: "pool" = "pool";
@@ -88,31 +89,8 @@ export class Liability implements MoneyPool {
   }
 
   // TODO: commonize with Asset.populatePastValues
-  populatePastValues(...values: PlotPoint[]): MoneyPool {
-    // add the initYear to the values
-    values.push({ year: this.initYear, value: this.initValue });
-
-    values.sort((a, b) => a.year - b.year).forEach((value, index) => {
-      if (value.year >= this.initYear) {
-        // TODO: custom error
-        throw new Error("Value year must be less than init year");
-      }
-
-      // interpolate values for missing years if there is a gap
-      if (index > 0 && values[index - 1].year < value.year - 1) {
-        const prevValue = values[index - 1].value;
-        const yearDiff = value.year - values[index - 1].year;
-        const valueIncrement = (value.value - prevValue) / yearDiff;
-        for (let year = values[index - 1].year + 1; year < value.year; year++) {
-          this._plotPoints.set(year, prevValue + valueIncrement * (year - values[index - 1].year));
-        }
-      }
-
-      // set the value for the year
-      this._plotPoints.set(value.year, value.value);
-    })
-
-
+  populatePastValues(...values: PlotPoint[]): Liability {
+    populatePlotPointsWithPastData(this._plotPoints, this.initYear, this.initValue, ...values);
     return this;
   }
 } 

@@ -1,4 +1,4 @@
-import { getRandomExpenseColor } from './colors';
+import { getRandomExpenseColor } from './commons/colors';
 import { Goal } from './Goal';
 
 describe('Goal', () => {

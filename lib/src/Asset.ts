@@ -1,4 +1,5 @@
-import { MoneyPool, PlotPoint } from './types';
+import { extrapolatePlotPointsFromStart, populatePlotPointsWithPastData } from './commons/plot-point-utils';
+import { MoneyPool, PlotPoint } from './commons/types';
 
 export class Asset implements MoneyPool {
   type: "pool" = "pool";
@@ -70,58 +71,12 @@ export class Asset implements MoneyPool {
   }
 
   extrapolateFromStart(startYear: number, startValue: number = 0): MoneyPool {
-    if (startYear >= this.initYear) {
-      throw new Error("Start year must be less than init year");
-    }
-
-    // Calculate the yearly increment for linear growth
-    const yearDiff = this.initYear - startYear;
-    const valueIncrement = (this.initValue - startValue) / yearDiff;
-
-    // Clear any existing points before initYear
-    for (let year = startYear; year < this.initYear; year++) {
-      this._plotPoints.delete(year);
-    }
-
-    // Fill values from startYear to initYear using linear growth
-    let currentValue = startValue;
-    for (let year = startYear; year < this.initYear; year++) {
-      this._plotPoints.set(year, currentValue);
-      currentValue += valueIncrement;
-    }
-
-    // Ensure initYear has its original value
-    this._plotPoints.set(this.initYear, this.initValue);
-
+    extrapolatePlotPointsFromStart(this._plotPoints, this.initYear, this.initValue, startYear, startValue);
     return this;
   }
 
-  // TODO: commonize with Liability.populatePastValues
-  populatePastValues(...values: PlotPoint[]): MoneyPool {
-    // add the initYear to the values
-    values.push({ year: this.initYear, value: this.initValue });
-
-    values.sort((a, b) => a.year - b.year).forEach((value, index) => {
-      if (value.year > this.initYear) {
-        // TODO: custom error
-        throw new Error("Value year must be less than init year");
-      }
-
-      // interpolate values for missing years if there is a gap
-      if (index > 0 && values[index - 1].year < value.year - 1) {
-        const prevValue = values[index - 1].value;
-        const yearDiff = value.year - values[index - 1].year;
-        const valueIncrement = (value.value - prevValue) / yearDiff;
-        for (let year = values[index - 1].year + 1; year < value.year; year++) {
-          this._plotPoints.set(year, prevValue + valueIncrement * (year - values[index - 1].year));
-        }
-      }
-
-      // set the value for the year
-      this._plotPoints.set(value.year, value.value);
-    })
-
-
+  populatePastValues(...values: PlotPoint[]): Asset {
+    populatePlotPointsWithPastData(this._plotPoints, this.initYear, this.initValue, ...values);
     return this;
   }
 } 

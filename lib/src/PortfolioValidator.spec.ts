@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import {Asset,ErrorOutsidePortfolioBounds, ErrorSavingsDistributionGap, ErrorSavingsDistributionOverlap, ErrorSpendPriorityGap, ErrorSpendPriorityOverlap, Expense, Income, Liability, Portfolio, PortfolioValidator, SavingsDistribution, SpendPriority} from ".";
-import { getRandomAssetColor, getRandomExpenseColor, getRandomIncomeColor, getRandomLiabilityColor } from "./colors";
+import { getRandomAssetColor, getRandomExpenseColor, getRandomIncomeColor, getRandomLiabilityColor } from "./commons/colors";
 
 describe("PortfolioValidator", () => {
   it("should invalidate adding items outside portfolio bounds", () => {

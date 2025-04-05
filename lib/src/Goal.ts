@@ -1,7 +1,7 @@
 import { Liability } from "./Liability";
 import { Expense } from "./Expense";
-import { MoneyPool, MoneyStream } from "./types";
-import { getRandomLiabilityColor } from "./colors";
+import { MoneyPool, MoneyStream } from "./commons/types";
+import { getRandomLiabilityColor } from "./commons/colors";
 
 export class Goal {
   name: string;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import { Asset } from "./Asset";
-import { getRandomAssetColor } from "./colors";
+import { getRandomAssetColor } from "./commons/colors";
 
 describe("Asset", () => {
   it("should create an asset", () => {

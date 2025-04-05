@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import { Income } from "./Income";
-import { getRandomIncomeColor } from "./colors";
+import { getRandomIncomeColor } from "./commons/colors";
 
 describe("Income", () => {
   it("should create an income", () => {
@@ -30,5 +30,20 @@ describe("Income", () => {
     expect(plotPoints[0].value).toBe(0);
     expect(plotPoints[5].year).toBe(2025);
     expect(plotPoints[5].value).toBe(0);
+
+    // 0 for years before the income starts
+    expect(income.getPlotPoint(2010).value).toBe(0);
+
   });
+
+  it("should extrapolate income", () => {
+    const income = new Income("Income", getRandomIncomeColor(), 2020, 2025, 1000, 0.05);
+
+    income.extrapolateFromStart(2010, 0);
+
+    expect(income.getPlotPoint(2010).value).toBe(0);
+    expect(income.getPlotPoint(2011).value).toBe(100);
+    expect(income.getPlotPoint(2012).value).toBe(200);
+    
+  })
 }); 

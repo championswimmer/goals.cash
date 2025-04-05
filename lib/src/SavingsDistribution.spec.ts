@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import { Asset, SavingsDistribution } from "./";
-import { getRandomAssetColor } from "./colors";
+import { getRandomAssetColor } from "./commons/colors";
 
 describe("SavingsDistribution", () => {
   const cashSavings = new Asset("Cash Savings", getRandomAssetColor(), 2015, 100000, 0.05);

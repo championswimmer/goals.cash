@@ -38,6 +38,14 @@ export interface MoneyPlottable {
 
   getPlotPoint(year: number): PlotPoint
   getPlotPoints(startYear: number, endYear: number): PlotPoint[]
+
+  /**
+   * Extrapolate the values from startValue at the startYear to the initial value at the initYear
+   * @param startYear The start year of the portfolio
+   * @param startValue The value of the pool/stream at the start year (defaults to 0)
+   * @returns this (for chaining)
+  */
+  extrapolateFromStart(startYear: number, startValue?: number): MoneyPlottable
 }
 
 /**
@@ -54,14 +62,6 @@ export interface MoneyPool extends MoneyPlottable {
   type: "pool"
   chart: "area"
   poolType: "asset" | "liability"
-
-  /**
-   * Extrapolate the pool's value from startValue at the startYear to the initial value at the initYear
-   * @param startYear The start year of the portfolio
-   * @param startValue The value of the pool at the start year (defaults to 0)
-   * @returns this (for chaining)
-   */
-  extrapolateFromStart(startYear: number, startValue?: number): MoneyPool
 
   /**
    * Populate the past values of the pool
@@ -85,10 +85,4 @@ export interface MoneyStream extends MoneyPlottable {
    * The end year of the stream
    */
   endYear: number
-
-  /**
-   * Extrapolate the stream's value from startValue at the startYear to the initial value at the initYear
-   * @param startYear The start year of the portfolio
-   */
-  extrapolateFromStart(startYear: number, startValue: number): MoneyStream
 }
