@@ -13,12 +13,17 @@ import {
 import Chart, { ChartType } from "chart.js/auto";
 
 const currentYear = new Date().getFullYear()
-const pb = new Portfolio.Builder(2015, 2040, currentYear, 30)
+const s = 2015 
+const e = 2040
+
+const pb = new Portfolio.Builder(s, e, currentYear, 30)
 
 const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2025, 30000, 0.03)
-savingsAsset.extrapolateFromStart(2015, 0)
+savingsAsset.extrapolateFromStart(2020, 0)
+savingsAsset.spendCutoff = 15000
 const stocksAsset = new Asset("Stocks", colors.getRandomAssetColor(), 2025, 100000, 0.07)
-stocksAsset.extrapolateFromStart(2015, 0)
+stocksAsset.extrapolateFromStart(2020, 0)
+stocksAsset.spendCutoff = 20000
 pb.addAsset(savingsAsset)
 pb.addAsset(stocksAsset)
 // pb.addLiability(new Liability("Mortgage", "red", 2015, 200000, 0.03))
@@ -30,7 +35,7 @@ const sideHustleIncome = new Income("Side Hustle", colors.getRandomIncomeColor()
 pb.addIncome(salaryIncome)
 pb.addIncome(sideHustleIncome)
 
-const rentExpense = new Expense("Rent", colors.getRandomExpenseColor(), currentYear, 2040, 45000, 0.04)
+const rentExpense = new Expense("Rent", colors.getRandomExpenseColor(), currentYear, 2040, 47000, 0.04)
 pb.addExpense(rentExpense)
 pb.addSavingsDistribution(new SavingsDistribution(2025, 2040, [
   { asset: savingsAsset, percentage: 30 },
@@ -43,14 +48,13 @@ pb.addSpendPriority(new SpendPriority(2025, 2040, [
 ]))
 
 const portfolio = pb.build()
+portfolio.overrideSpendCutoff = false
 
 const simulator = new PortfolioSimulator(portfolio)
 simulator.simulate()
 
 
 const ctx = document.getElementById("portfolio-chart") as HTMLCanvasElement
-const s = portfolio.startYear 
-const e = portfolio.endYear
 const portfolioChart = new Chart(ctx, {
   data: {
     labels: [

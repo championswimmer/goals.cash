@@ -98,8 +98,8 @@ export class PortfolioSimulator {
             }
           })
 
-        // second-pass: without considering spendCutoff
-        if (deficit !== 0) {
+        // second-pass: without considering spendCutoff (if that flag is set)
+        if (deficit !== 0 && this._portfolio.overrideSpendCutoff) {
           spendPriority.spendPriorityMap
             .filter(({ asset }) => asset.initYear < year) // spend from assets that have started
             .sort((a, b) => a.priority - b.priority) // sort by priority, just for sanity (should already be sorted)

@@ -7,6 +7,7 @@ export class Portfolio {
   endYear: number; 
   currentYear: number; 
   currentAge: number;
+  overrideSpendCutoff: boolean = false;
 
   assets: Asset[] = [];
   liabilities: Liability[] = [];
