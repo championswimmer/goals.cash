@@ -8,10 +8,9 @@
 ## Modules 
 
 ### `lib` 
+[Documentation](./lib/README.md)
 
 Core logic (will be common to backend and frontend) 
-
-[List of TODOs](./lib/TODO.md)
 
 
 ### `chartjs-sample` 
