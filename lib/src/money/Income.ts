@@ -1,5 +1,5 @@
 import { ErrorUnsupportedExtrapolation } from '../commons/errors';
-import { extrapolatePlotPointsFromStart } from '../commons/plot-point-utils';
+import { extrapolatePlotPointsFromStart, populatePlotPointsWithPastData } from '../commons/plot-point-utils';
 import { MoneyStream, PlotPoint } from '../commons/types';
 
 class ErrorIncomeBounds extends Error {
@@ -74,6 +74,11 @@ export class Income implements MoneyStream {
 
   extrapolateFromStart(startYear: number, startValue: number = 0): Income {
     extrapolatePlotPointsFromStart(this._plotPoints, this.initYear, this.initValue, startYear, startValue);
+    return this;
+  }
+
+  populatePastValues(...values: PlotPoint[]): Income {
+    populatePlotPointsWithPastData(this._plotPoints, this.initYear, this.initValue, ...values);
     return this;
   }
 } 

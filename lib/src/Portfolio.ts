@@ -29,6 +29,12 @@ export class Portfolio {
       this.portfolio = new Portfolio(startYear, endYear, currentYear, currentAge);
       this.validator = new PortfolioValidator(this.portfolio);
     }
+
+    from(portfolio: Portfolio): this {
+      this.portfolio = portfolio;
+      this.validator = new PortfolioValidator(this.portfolio);
+      return this;
+    }
     
     addAsset(asset: Asset): this {
       this.validator.validateAsset(asset);

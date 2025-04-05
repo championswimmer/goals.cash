@@ -46,6 +46,14 @@ export interface MoneyPlottable {
    * @returns this (for chaining)
   */
   extrapolateFromStart(startYear: number, startValue?: number): MoneyPlottable
+
+  /**
+   * Populate the past values of the pool
+   * @param values The values to populate the past values with
+   * @returns this (for chaining)
+   */
+  populatePastValues(...values: PlotPoint[]): MoneyPlottable
+
 }
 
 /**
@@ -62,13 +70,6 @@ export interface MoneyPool extends MoneyPlottable {
   type: "pool"
   chart: "area"
   poolType: "asset" | "liability"
-
-  /**
-   * Populate the past values of the pool
-   * @param values The values to populate the past values with
-   * @returns this (for chaining)
-   */
-  populatePastValues(...values: PlotPoint[]): MoneyPool
 }
 
 /**
