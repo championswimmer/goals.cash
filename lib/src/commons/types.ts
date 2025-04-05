@@ -69,7 +69,7 @@ export interface MoneyPlottable {
 export interface MoneyPool extends MoneyPlottable {
   type: "pool"
   chart: "area"
-  poolType: "asset" | "liability"
+  poolType: "asset" | "liability" | "worth"
 }
 
 /**
@@ -80,7 +80,7 @@ export interface MoneyPool extends MoneyPlottable {
 export interface MoneyStream extends MoneyPlottable {
   type: "stream"
   chart: "bar"
-  streamType: "income" | "expense"
+  streamType: "income" | "expense" | "flow"
 
   /**
    * The end year of the stream

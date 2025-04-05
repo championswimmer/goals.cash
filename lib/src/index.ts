@@ -18,6 +18,7 @@ export { SpendPriority } from "./SpendPriority"
 export {
   PortfolioValidator,
 } from "./PortfolioValidator"
+export { PortfolioSimulator } from "./PortfolioSimulator"
 
 export {
   ErrorOutsidePortfolioBounds,

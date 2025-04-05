@@ -100,4 +100,15 @@ export class Asset implements MoneyPool {
     populatePlotPointsWithPastData(this._plotPoints, this.initYear, this.initValue, ...values);
     return this;
   }
+
+  clone(): Asset {
+    const asset = new Asset(this.name, this.color, this.initYear, this.initValue, this.growthRate, this.isLiquid, this.spendCutoff);
+    // copy only plot points before initYear (extrapolated or manually set ones)
+    for (const [year, value] of this._plotPoints.entries()) {
+      if (year < this.initYear) {
+        asset._plotPoints.set(year, value);
+      }
+    }
+    return asset;
+  }
 } 

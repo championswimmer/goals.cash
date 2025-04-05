@@ -4,18 +4,30 @@ import {
   Portfolio,
   Income,
   Expense,
-  colors
+  colors,
+  PortfolioSimulator,
+  SavingsDistribution,
+  SpendPriority
 } from "@goalscash/lib/src";
 
 import Chart, { ChartType } from "chart.js/auto";
 
 const pb = new Portfolio.Builder(2015, 2075, new Date().getFullYear(), 30)
 
-// pb.addAsset(new Asset("Savings", "blue", 2015, 100000, 0.05))
+const savingsAsset = new Asset("Savings", colors.getRandomAssetColor(), 2015, 100000, 0.05)
+pb.addAsset(savingsAsset)
 // pb.addLiability(new Liability("Mortgage", "red", 2015, 200000, 0.03))
 pb.addIncome(new Income("Salary", colors.getRandomIncomeColor(), 2020, 2030, 50000, 0.05))
 pb.addIncome(new Income("Side Hustle", colors.getRandomIncomeColor(), 2020, 2030, 10000, 0.05))
 pb.addExpense(new Expense("Rent", colors.getRandomExpenseColor(), 2025, 2030, 10000, 0.03))
+
+pb.addSavingsDistribution(new SavingsDistribution(2015, 2075, [
+  { asset: savingsAsset, percentage: 100 },
+]))
+
+pb.addSpendPriority(new SpendPriority(2015, 2075, [
+  { asset: savingsAsset, priority: 1}
+]))
 
 const portfolio = pb.build()
 
@@ -55,3 +67,6 @@ const portfolioChart = new Chart(ctx, {
 })
 
 portfolioChart.update()
+
+const simulator = new PortfolioSimulator(portfolio)
+simulator.simulate()

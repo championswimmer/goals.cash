@@ -2,6 +2,7 @@ import { Expense } from './Expense';
 import { populatePlotPointsWithPastData } from '../commons/plot-point-utils';
 import { MoneyPool, PlotPoint } from '../commons/types';
 import { ErrorPortfolioSimulationIncomplete } from '../commons/errors';
+import { Asset } from './Asset';
 
 export class Liability implements MoneyPool {
   type: "pool" = "pool";
@@ -62,4 +63,15 @@ export class Liability implements MoneyPool {
     populatePlotPointsWithPastData(this._plotPoints, this.initYear, this.initValue, ...values);
     return this;
   }
-} 
+
+  clone(): Liability {
+    const liability = new Liability(this.name, this.color, this.initYear, this.initValue, this.growthRate, this.repaymentExpense);
+    // copy only plot points before initYear (extrapolated or manually set ones)
+    for (const [year, value] of this._plotPoints.entries()) {
+      if (year < this.initYear) {
+        liability._plotPoints.set(year, value);
+      }
+    }
+    return liability;
+  }
+}
