@@ -1,7 +1,7 @@
 import { ErrorUnsupportedExtrapolation } from '../commons/errors';
 import { MoneyStream, PlotPoint } from '../commons/types';
 
-class ErrorExpenseBounds extends Error {
+export class ErrorExpenseBounds extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ERR_EXPENSE_BOUNDS";
