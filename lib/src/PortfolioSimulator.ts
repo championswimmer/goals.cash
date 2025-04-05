@@ -33,8 +33,8 @@ export class PortfolioSimulator {
   }
 
   simulate() {
-    // run from start to end of portfolio
-    for (let year = this._portfolio.startYear; year <= this._portfolio.endYear; year++) {
+    // run from current year to end of portfolio
+    for (let year = this._portfolio.currentYear; year <= this._portfolio.endYear; year++) {
       const activeAssets = this.getActiveAssetsForYear(year);
       const activeLiabilities = this.getActiveLiabilitiesForYear(year);
       const activeIncomes = this.getActiveIncomesForYear(year);
@@ -130,8 +130,8 @@ export class PortfolioSimulator {
       // update all assets (a dragnet to cover assets that might not be in distribution or priority)
       // this is safe to do because updatePlotPoint() handles repeat calls with 0 inflows gracefully
       for (const asset of activeAssets) {
-        console.log('updatePlotPoint',year, asset.name, asset.getPlotPoint(year).value);
         asset.updatePlotPoint(year, 0);
+        console.log('updatePlotPoint',year, asset.name, asset.getPlotPoint(year).value);
       }
     }
   }

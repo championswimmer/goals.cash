@@ -36,15 +36,15 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
-      const income1 = new Income('Income1', getRandomIncomeColor(), 2020, 2024, 100000, 0.05)
+      const income1 = new Income('Income1', getRandomIncomeColor(), 2025, 2027, 100000, 0.05)
       pb.addIncome(income1)
 
       expect(() => {
         pb.addSavingsDistribution(new SavingsDistribution(
           2019,
-          2025,
+          2027,
           [{
             asset: asset1,
             percentage: 100
@@ -60,9 +60,9 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
-      const income1 = new Income('Income1', getRandomIncomeColor(), 2020, 2024, 100000, 0.05)
+      const income1 = new Income('Income1', getRandomIncomeColor(), 2025, 2027, 100000, 0.05)
       pb.addIncome(income1)
 
       expect(() => {
@@ -78,15 +78,15 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
-      const income1 = new Income('Income1', getRandomIncomeColor(), 2020, 2024, 100000, 0.05)
+      const income1 = new Income('Income1', getRandomIncomeColor(), 2025, 2027, 100000, 0.05)
       pb.addIncome(income1)
 
       // now add a valid savings distribution, but not at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2022,
-        2025,
+        2026,
+        2028,
         [{
           asset: asset1,
           percentage: 100
@@ -106,15 +106,15 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
-      const income1 = new Income('Income1', getRandomIncomeColor(), 2020, 2024, 100000, 0.05)
+      const income1 = new Income('Income1', getRandomIncomeColor(), 2025, 2027, 100000, 0.05)
       pb.addIncome(income1)
 
       // now add a valid savings distribution, but not at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2022,
-        2025,
+        2027,
+        2029,
         [{
           asset: asset1,
           percentage: 100
@@ -123,8 +123,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid savings distribution at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
-        2021,
+        2025,
+        2026,
         [{
           asset: asset1,
           percentage: 100
@@ -143,15 +143,15 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
-      const income1 = new Income('Income1', getRandomIncomeColor(), 2020, 2024, 100000, 0.05)
+      const income1 = new Income('Income1', getRandomIncomeColor(), 2025, 2027, 100000, 0.05)
       pb.addIncome(income1)
 
       // now add a valid savings distribution, but not at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2022,
-        2025,
+        2027,
+        2029,
         [{
           asset: asset1,
           percentage: 100
@@ -160,8 +160,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid savings distribution at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
-        2021,
+        2025,
+        2026,
         [{
           asset: asset1,
           percentage: 100
@@ -170,7 +170,7 @@ describe("PortfolioValidator", () => {
 
       // now add a valid savings distribution that ends at the end of the portfolio
       pb.addSavingsDistribution(new SavingsDistribution(
-        2027,
+        2032,
         2075,
         [{
           asset: asset1,
@@ -190,15 +190,15 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
-      const income1 = new Income('Income1', getRandomIncomeColor(), 2020, 2024, 100000, 0.05)
+      const income1 = new Income('Income1', getRandomIncomeColor(), 2025, 2027, 100000, 0.05)
       pb.addIncome(income1)
 
       // now add a valid savings distribution, but not at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2022,
-        2025,
+        2027,
+        2029,
         [{
           asset: asset1,
           percentage: 100
@@ -207,8 +207,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid savings distribution at the beginning of the first asset
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
-        2021,
+        2025,
+        2026,
         [{
           asset: asset1,
           percentage: 100
@@ -217,7 +217,7 @@ describe("PortfolioValidator", () => {
 
       // now add a valid savings distribution that ends at the end of the portfolio
       pb.addSavingsDistribution(new SavingsDistribution(
-        2025,
+        2028,
         2075,
         [{
           asset: asset1,
@@ -241,7 +241,7 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
 
       expect(() => {
@@ -263,10 +263,10 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
+        2025,
         2075,
         [{
           asset: asset1,
@@ -285,10 +285,10 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
+        2025,
         2075,
         [{
           asset: asset1,
@@ -298,8 +298,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority, but not at the beginning of the first asset
       pb.addSpendPriority(new SpendPriority(
-        2022,
-        2025,
+        2026,
+        2028,
         [{
           priority: 0,
           asset: asset1
@@ -318,10 +318,10 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
+        2025,
         2075,
         [{
           asset: asset1,
@@ -331,8 +331,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority, but not at the beginning of the first asset
       pb.addSpendPriority(new SpendPriority(
-        2022,
-        2025,
+        2027,
+        2029,
         [{
           priority: 0,
           asset: asset1
@@ -341,8 +341,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority at the beginning of the first asset
       pb.addSpendPriority(new SpendPriority(
-        2020,
-        2021,
+        2025,
+        2026,
         [{
           priority: 0,
           asset: asset1
@@ -361,10 +361,10 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
+        2025,
         2075,
         [{
           asset: asset1,
@@ -374,8 +374,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority, but not at the beginning of the first asset
       pb.addSpendPriority(new SpendPriority(
-        2022,
-        2025,
+        2027,
+        2029,
         [{
           priority: 0,
           asset: asset1
@@ -394,7 +394,7 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority that ends at the end of the portfolio
       pb.addSpendPriority(new SpendPriority(
-        2027,
+        2031,
         2075,
         [{
           priority: 0,
@@ -414,10 +414,10 @@ describe("PortfolioValidator", () => {
         2025,
         30
       )
-      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2020, 100000, 0.05)
+      const asset1 = new Asset('Asset1', getRandomAssetColor(), 2025, 100000, 0.05)
       pb.addAsset(asset1)
       pb.addSavingsDistribution(new SavingsDistribution(
-        2020,
+        2025,
         2075,
         [{
           asset: asset1,
@@ -427,7 +427,7 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority, but not at the beginning of the first asset
       pb.addSpendPriority(new SpendPriority(
-        2022,
+        2027,
         2075,
         [{
           priority: 0,
@@ -437,8 +437,8 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority at the beginning of the first asset
       pb.addSpendPriority(new SpendPriority(
-        2020,
-        2021,
+        2025,
+        2026,
         [{
           priority: 0,
           asset: asset1
@@ -447,7 +447,7 @@ describe("PortfolioValidator", () => {
 
       // now add a valid spend priority that ends at the end of the portfolio
       pb.addSpendPriority(new SpendPriority(
-        2025,
+        2028,
         2075,
         [{
           priority: 0,

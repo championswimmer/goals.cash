@@ -27,7 +27,7 @@ export class SpendPriority {
     for (const { priority, asset } of spendPriorityMap) {
       if (this.startYear < asset.initYear) {
         // TODO: add error class
-        throw new Error("Cannot spend from an asset that has not started yet");
+        // throw new Error("Cannot spend from an asset that has not started yet");
       }
       if (!asset.isLiquid) {
         // TODO: add error class

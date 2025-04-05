@@ -19,13 +19,13 @@ export class PortfolioValidator {
   }
 
   validateAsset(asset: Asset) {
-    if (asset.initYear < this.portfolio.startYear || asset.initYear > this.portfolio.endYear) {
+    if (asset.initYear < this.portfolio.currentYear || asset.initYear > this.portfolio.endYear) {
       throw new ErrorOutsidePortfolioBounds(`Asset ${asset.name} is outside the portfolio bounds`);
     }
   }
 
   validateLiability(liability: Liability) {
-    if (liability.initYear < this.portfolio.startYear || liability.initYear > this.portfolio.endYear) {
+    if (liability.initYear < this.portfolio.currentYear || liability.initYear > this.portfolio.endYear) {
       throw new ErrorOutsidePortfolioBounds(`Liability ${liability.name} is outside the portfolio bounds`);
     }
   }
@@ -90,8 +90,10 @@ export class PortfolioValidator {
       throw new ErrorSavingsDistributionGap("No savings distributions defined");
     }
 
-    // Check that first distribution starts at beginning of first asset
-    if (distributions[0].startYear !== this.portfolio.assets[0].initYear) {
+    const minStartYear = Math.max(this.portfolio.assets[0].initYear, this.portfolio.currentYear)
+
+    // Check that first distribution starts at beginning of first asset or current year (whichever is later)
+    if (distributions[0].startYear !== minStartYear) {
       throw new ErrorSavingsDistributionGap("First savings distribution must start at beginning of first asset");
     }
 
@@ -137,8 +139,10 @@ export class PortfolioValidator {
       throw new ErrorSpendPriorityGap("No spend priorities defined");
     }
 
-    // Check that first spend priority starts at beginning of first asset
-    if (spendPriorities[0].startYear !== this.portfolio.assets[0].initYear) {
+    const minStartYear = Math.max(this.portfolio.assets[0].initYear, this.portfolio.currentYear)
+
+    // Check that first spend priority starts at beginning of first asset or current year (whichever is later)
+    if (spendPriorities[0].startYear !== minStartYear) {
       throw new ErrorSpendPriorityGap("First spend priority must start at beginning of first asset");
     }
 
