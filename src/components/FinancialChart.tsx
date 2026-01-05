@@ -24,6 +24,25 @@ interface FinancialChartProps {
   goals: Goal[]
 }
 
+const CustomXAxisTick = (props: any) => {
+  const { x, y, payload } = props
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={0}
+        dy={8}
+        textAnchor="end"
+        fill="currentColor"
+        transform="rotate(-45)"
+        fontSize={12}
+      >
+        {payload.value}
+      </text>
+    </g>
+  )
+}
+
 export function FinancialChart({ projections, currency, goals }: FinancialChartProps) {
   const [showExpensesNegative, setShowExpensesNegative] = useState(true)
 
@@ -78,16 +97,16 @@ export function FinancialChart({ projections, currency, goals }: FinancialChartP
         <div className="mb-6">
           <h3 className="text-lg font-medium mb-4">Income & Expenses</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 60, bottom: 20 }}>
+            <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 60, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.88 0.01 250)" />
               <XAxis
                 dataKey="year"
-                tick={{ fontSize: 12 }}
+                tick={<CustomXAxisTick />}
                 tickFormatter={(value) => {
                   const item = chartData.find((d) => d.year === value)
-                  return `${value}\n(${item?.age})`
+                  return `${value} (${item?.age})`
                 }}
-                height={50}
+                height={60}
               />
               <YAxis
                 tick={{ fontSize: 12 }}
@@ -127,7 +146,7 @@ export function FinancialChart({ projections, currency, goals }: FinancialChartP
         <div>
           <h3 className="text-lg font-medium mb-4">Net Worth</h3>
           <ResponsiveContainer width="100%" height={350}>
-            <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 60, bottom: 20 }}>
+            <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 60, bottom: 60 }}>
               <defs>
                 <linearGradient id="netWorthGradientPositive" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="oklch(0.55 0.15 150)" stopOpacity={0.3} />
@@ -141,12 +160,12 @@ export function FinancialChart({ projections, currency, goals }: FinancialChartP
               <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.88 0.01 250)" />
               <XAxis
                 dataKey="year"
-                tick={{ fontSize: 12 }}
+                tick={<CustomXAxisTick />}
                 tickFormatter={(value) => {
                   const item = chartData.find((d) => d.year === value)
-                  return `${value}\n(${item?.age})`
+                  return `${value} (${item?.age})`
                 }}
-                height={50}
+                height={60}
               />
               <YAxis
                 tick={{ fontSize: 12 }}
