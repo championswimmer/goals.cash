@@ -453,7 +453,7 @@ export function DataSidebar({
                       />
                       <p className="text-xs text-muted-foreground">
                         {parseFloat(newAssetRisk) === 0 ? 'No risk: growth is constant' : 
-                         `Growth varies from ${(parseFloat(newAssetGrowth) * (1 - parseFloat(newAssetRisk))).toFixed(1)}% to ${(parseFloat(newAssetGrowth) * (1 + 2 * parseFloat(newAssetRisk))).toFixed(1)}% annually`}
+                         `Growth varies from ${(parseFloat(newAssetGrowth) - 2 * parseFloat(newAssetGrowth) * parseFloat(newAssetRisk)).toFixed(1)}% to ${(parseFloat(newAssetGrowth) + 2 * parseFloat(newAssetGrowth) * parseFloat(newAssetRisk)).toFixed(1)}% annually`}
                       </p>
                     </div>
                     <div className="flex gap-2">

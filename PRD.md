@@ -24,7 +24,7 @@ This is a sophisticated financial modeling tool with multiple interconnected dat
 - **Purpose**: Model wealth accumulation from savings, investments, stocks, real estate, etc. with realistic market volatility
 - **Trigger**: Add Asset button in sidebar Assets tab
 - **Progression**: Click Add Asset → Enter asset name, current value, growth rate %, risk level (0-100%) → Save → Asset appears in list and calculations
-- **Success criteria**: Assets compound annually at variable rates based on risk setting; 0% risk = constant growth, 100% risk = growth varies from -x% to +2x% each year (randomized per render)
+- **Success criteria**: Assets compound annually at variable rates based on risk setting; 0% risk = constant growth, 100% risk = growth varies from -x% to +3x% (i.e., x% - 2x% to x% + 2x%) each year (randomized per render). At 50% risk, growth varies from 0% to +2x% (i.e., x% - x% to x% + x%)
 
 ### Liability Management
 - **Functionality**: Track loans and debts with remaining balance and monthly payments

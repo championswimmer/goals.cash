@@ -13,7 +13,7 @@ function getRandomGrowthRate(baseRate: number, risk: number): number {
     return baseRate
   }
   
-  const minRate = -baseRate * risk
+  const minRate = baseRate - (2 * baseRate * risk)
   const maxRate = baseRate + (2 * baseRate * risk)
   
   return minRate + Math.random() * (maxRate - minRate)
