@@ -20,11 +20,11 @@ This is a sophisticated financial modeling tool with multiple interconnected dat
 - **Success criteria**: Profile data persists and currency/age constraints apply to all calculations
 
 ### Asset Management
-- **Functionality**: Track multiple assets with monetary values and annual growth rates
-- **Purpose**: Model wealth accumulation from savings, investments, stocks, real estate, etc.
+- **Functionality**: Track multiple assets with monetary values, annual growth rates, and risk/volatility levels
+- **Purpose**: Model wealth accumulation from savings, investments, stocks, real estate, etc. with realistic market volatility
 - **Trigger**: Add Asset button in sidebar Assets tab
-- **Progression**: Click Add Asset → Enter asset name, current value, growth rate % → Save → Asset appears in list and calculations
-- **Success criteria**: Assets compound annually at specified rates and contribute to net worth calculations
+- **Progression**: Click Add Asset → Enter asset name, current value, growth rate %, risk level (0-100%) → Save → Asset appears in list and calculations
+- **Success criteria**: Assets compound annually at variable rates based on risk setting; 0% risk = constant growth, 100% risk = growth varies from -x% to +2x% each year (randomized per render)
 
 ### Liability Management
 - **Functionality**: Track loans and debts with remaining balance and monthly payments

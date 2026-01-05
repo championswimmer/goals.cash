@@ -12,6 +12,7 @@ export interface Asset {
   currentValue: number
   growthRate: number
   startYear: number
+  risk: number
 }
 
 export interface Liability {

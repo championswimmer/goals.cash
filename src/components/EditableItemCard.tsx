@@ -11,8 +11,9 @@ interface EditableItemCardProps {
   name: string
   amount: number
   growthRate?: number
+  risk?: number
   currency: string
-  onEdit: (updates: { name: string; amount: number; growthRate?: number; endYear?: number }) => void
+  onEdit: (updates: { name: string; amount: number; growthRate?: number; risk?: number; endYear?: number }) => void
   onDelete: () => void
   monthlyPayment?: number
   onEditMonthlyPayment?: (payment: number) => void
@@ -26,6 +27,7 @@ export function EditableItemCard({
   name,
   amount,
   growthRate,
+  risk,
   currency,
   onEdit,
   onDelete,
@@ -40,12 +42,14 @@ export function EditableItemCard({
   const [editName, setEditName] = useState(name)
   const [editAmount, setEditAmount] = useState(amount.toString())
   const [editGrowthRate, setEditGrowthRate] = useState(growthRate?.toString() || '0')
+  const [editRisk, setEditRisk] = useState(risk?.toString() || '0')
   const [editMonthlyPayment, setEditMonthlyPayment] = useState(monthlyPayment?.toString() || '0')
   const [editEndYear, setEditEndYear] = useState(endYear?.toString() || '')
 
   const handleSave = () => {
     const amountNum = parseFloat(editAmount)
     const growthNum = parseFloat(editGrowthRate)
+    const riskNum = parseFloat(editRisk)
     const monthlyNum = parseFloat(editMonthlyPayment)
     const endYearNum = editEndYear ? parseFloat(editEndYear) : undefined
 
@@ -54,6 +58,7 @@ export function EditableItemCard({
         name: editName,
         amount: amountNum,
         growthRate: growthRate !== undefined ? growthNum : undefined,
+        risk: risk !== undefined ? riskNum : undefined,
         endYear: endYearNum,
       })
       if (monthlyPayment !== undefined && onEditMonthlyPayment && !isNaN(monthlyNum)) {
@@ -67,6 +72,7 @@ export function EditableItemCard({
     setEditName(name)
     setEditAmount(amount.toString())
     setEditGrowthRate(growthRate?.toString() || '0')
+    setEditRisk(risk?.toString() || '0')
     setEditMonthlyPayment(monthlyPayment?.toString() || '0')
     setEditEndYear(endYear?.toString() || '')
     setIsEditing(false)
@@ -95,20 +101,43 @@ export function EditableItemCard({
         </div>
 
         {growthRate !== undefined && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label>Growth Rate</Label>
-              <span className="text-sm font-semibold tabular-nums">{editGrowthRate}%</span>
+          <>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Growth Rate</Label>
+                <span className="text-sm font-semibold tabular-nums">{editGrowthRate}%</span>
+              </div>
+              <Slider
+                value={[parseFloat(editGrowthRate)]}
+                onValueChange={([val]) => setEditGrowthRate(val.toString())}
+                min={-20}
+                max={30}
+                step={0.5}
+                className="w-full"
+              />
             </div>
-            <Slider
-              value={[parseFloat(editGrowthRate)]}
-              onValueChange={([val]) => setEditGrowthRate(val.toString())}
-              min={-20}
-              max={30}
-              step={0.5}
-              className="w-full"
-            />
-          </div>
+
+            {risk !== undefined && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label>Risk / Volatility</Label>
+                  <span className="text-sm font-semibold tabular-nums">{(parseFloat(editRisk) * 100).toFixed(0)}%</span>
+                </div>
+                <Slider
+                  value={[parseFloat(editRisk)]}
+                  onValueChange={([val]) => setEditRisk(val.toString())}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  {parseFloat(editRisk) === 0 ? 'No risk: growth is constant' : 
+                   `Growth varies from ${(parseFloat(editGrowthRate) * (1 - parseFloat(editRisk))).toFixed(1)}% to ${(parseFloat(editGrowthRate) * (1 + 2 * parseFloat(editRisk))).toFixed(1)}% annually`}
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {monthlyPayment !== undefined && onEditMonthlyPayment && (
@@ -170,6 +199,9 @@ export function EditableItemCard({
             <p className="text-sm text-muted-foreground mt-1">
               {growthRate >= 0 ? '+' : ''}
               {growthRate}% annual growth
+              {risk !== undefined && risk > 0 && (
+                <span className="ml-1">• {(risk * 100).toFixed(0)}% risk</span>
+              )}
             </p>
           )}
           {monthlyPayment !== undefined && (

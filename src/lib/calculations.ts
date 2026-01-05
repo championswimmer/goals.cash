@@ -8,6 +8,17 @@ import type {
   YearlyProjection,
 } from './types'
 
+function getRandomGrowthRate(baseRate: number, risk: number): number {
+  if (risk === 0) {
+    return baseRate
+  }
+  
+  const minRate = baseRate - (baseRate * risk)
+  const maxRate = baseRate + (2 * baseRate * risk)
+  
+  return minRate + Math.random() * (maxRate - minRate)
+}
+
 export function calculateProjections(
   profile: UserProfile,
   assets: Asset[],
@@ -126,7 +137,8 @@ export function calculateProjections(
       const prevProjection = projections[i - 1]
       assets.forEach((asset) => {
         const prevValue = prevProjection.assetBreakdown[asset.id] || 0
-        const newValue = prevValue * (1 + asset.growthRate / 100)
+        const effectiveGrowthRate = getRandomGrowthRate(asset.growthRate, asset.risk)
+        const newValue = prevValue * (1 + effectiveGrowthRate / 100)
         assetBreakdown[asset.id] = newValue
         totalAssets += newValue
       })

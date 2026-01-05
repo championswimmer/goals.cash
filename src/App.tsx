@@ -30,10 +30,17 @@ function App() {
     }
   }, [profile])
 
+  const normalizedAssets = useMemo(() => {
+    return (assets || []).map((asset) => ({
+      ...asset,
+      risk: asset.risk ?? 0,
+    }))
+  }, [assets])
+
   const projections = useMemo(() => {
-    if (!profile || !assets || !liabilities || !incomes || !expenses || !goals) return []
-    return calculateProjections(profile, assets, liabilities, incomes, expenses, goals)
-  }, [profile, assets, liabilities, incomes, expenses, goals])
+    if (!profile || !normalizedAssets || !liabilities || !incomes || !expenses || !goals) return []
+    return calculateProjections(profile, normalizedAssets, liabilities, incomes, expenses, goals)
+  }, [profile, normalizedAssets, liabilities, incomes, expenses, goals])
 
   const currentNetWorth = useMemo(() => {
     if (projections.length === 0) return 0
@@ -203,7 +210,7 @@ function App() {
         open={showDataSidebar}
         onOpenChange={setShowDataSidebar}
         profile={profile}
-        assets={assets || []}
+        assets={normalizedAssets || []}
         liabilities={liabilities || []}
         incomes={incomes || []}
         expenses={expenses || []}

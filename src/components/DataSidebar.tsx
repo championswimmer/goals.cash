@@ -70,6 +70,7 @@ export function DataSidebar({
   const [newAssetName, setNewAssetName] = useState('')
   const [newAssetValue, setNewAssetValue] = useState('')
   const [newAssetGrowth, setNewAssetGrowth] = useState('5')
+  const [newAssetRisk, setNewAssetRisk] = useState('0')
 
   const [newLiabilityName, setNewLiabilityName] = useState('')
   const [newLiabilityBalance, setNewLiabilityBalance] = useState('')
@@ -87,6 +88,7 @@ export function DataSidebar({
   const handleAddAsset = () => {
     const value = parseFloat(newAssetValue)
     const growth = parseFloat(newAssetGrowth)
+    const risk = parseFloat(newAssetRisk)
     if (newAssetName && !isNaN(value)) {
       onAddAsset({
         id: generateId(),
@@ -94,10 +96,12 @@ export function DataSidebar({
         currentValue: value,
         growthRate: growth,
         startYear: profile.startYear,
+        risk: risk,
       })
       setNewAssetName('')
       setNewAssetValue('')
       setNewAssetGrowth('5')
+      setNewAssetRisk('0')
       setAddingAsset(false)
     }
   }
@@ -382,12 +386,14 @@ export function DataSidebar({
                     name={asset.name}
                     amount={asset.currentValue}
                     growthRate={asset.growthRate}
+                    risk={asset.risk}
                     currency={profile.currency}
                     onEdit={(updates) =>
                       onUpdateAsset(asset.id, {
                         name: updates.name,
                         currentValue: updates.amount,
                         growthRate: updates.growthRate,
+                        risk: updates.risk,
                       })
                     }
                     onDelete={() => onDeleteAsset(asset.id)}
@@ -432,6 +438,23 @@ export function DataSidebar({
                         max={30}
                         step={0.5}
                       />
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label>Risk / Volatility</Label>
+                        <span className="text-sm font-semibold tabular-nums">{(parseFloat(newAssetRisk) * 100).toFixed(0)}%</span>
+                      </div>
+                      <Slider
+                        value={[parseFloat(newAssetRisk)]}
+                        onValueChange={([val]) => setNewAssetRisk(val.toString())}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {parseFloat(newAssetRisk) === 0 ? 'No risk: growth is constant' : 
+                         `Growth varies from ${(parseFloat(newAssetGrowth) * (1 - parseFloat(newAssetRisk))).toFixed(1)}% to ${(parseFloat(newAssetGrowth) * (1 + 2 * parseFloat(newAssetRisk))).toFixed(1)}% annually`}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Button onClick={handleAddAsset} className="flex-1">
