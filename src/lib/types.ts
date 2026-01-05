@@ -28,6 +28,7 @@ export interface Income {
   annualAmount: number
   growthRate: number
   startYear: number
+  endYear?: number
 }
 
 export interface Expense {

@@ -12,10 +12,13 @@ interface EditableItemCardProps {
   amount: number
   growthRate?: number
   currency: string
-  onEdit: (updates: { name: string; amount: number; growthRate?: number }) => void
+  onEdit: (updates: { name: string; amount: number; growthRate?: number; endYear?: number }) => void
   onDelete: () => void
   monthlyPayment?: number
   onEditMonthlyPayment?: (payment: number) => void
+  endYear?: number
+  profileAge?: number
+  profileHorizonAge?: number
 }
 
 export function EditableItemCard({
@@ -27,23 +30,29 @@ export function EditableItemCard({
   onDelete,
   monthlyPayment,
   onEditMonthlyPayment,
+  endYear,
+  profileAge,
+  profileHorizonAge,
 }: EditableItemCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState(name)
   const [editAmount, setEditAmount] = useState(amount.toString())
   const [editGrowthRate, setEditGrowthRate] = useState(growthRate?.toString() || '0')
   const [editMonthlyPayment, setEditMonthlyPayment] = useState(monthlyPayment?.toString() || '0')
+  const [editEndYear, setEditEndYear] = useState(endYear?.toString() || '')
 
   const handleSave = () => {
     const amountNum = parseFloat(editAmount)
     const growthNum = parseFloat(editGrowthRate)
     const monthlyNum = parseFloat(editMonthlyPayment)
+    const endYearNum = editEndYear ? parseFloat(editEndYear) : undefined
 
     if (editName && !isNaN(amountNum)) {
       onEdit({
         name: editName,
         amount: amountNum,
         growthRate: growthRate !== undefined ? growthNum : undefined,
+        endYear: endYear !== undefined ? endYearNum : undefined,
       })
       if (monthlyPayment !== undefined && onEditMonthlyPayment && !isNaN(monthlyNum)) {
         onEditMonthlyPayment(monthlyNum)
@@ -57,6 +66,7 @@ export function EditableItemCard({
     setEditAmount(amount.toString())
     setEditGrowthRate(growthRate?.toString() || '0')
     setEditMonthlyPayment(monthlyPayment?.toString() || '0')
+    setEditEndYear(endYear?.toString() || '')
     setIsEditing(false)
   }
 
@@ -111,6 +121,22 @@ export function EditableItemCard({
           </div>
         )}
 
+        {endYear !== undefined && profileAge !== undefined && profileHorizonAge !== undefined && (
+          <div className="space-y-2">
+            <Label>End Year (Optional)</Label>
+            <Input
+              type="number"
+              value={editEndYear}
+              onChange={(e) => setEditEndYear(e.target.value)}
+              placeholder={`Leave empty for full horizon (age ${profileHorizonAge})`}
+              min={new Date().getFullYear()}
+            />
+            <p className="text-xs text-muted-foreground">
+              Income will stop in this year (e.g., retirement at age 60)
+            </p>
+          </div>
+        )}
+
         <div className="flex gap-2">
           <Button onClick={handleSave} size="sm" className="flex-1">
             <Check className="mr-2" size={16} />
@@ -142,6 +168,11 @@ export function EditableItemCard({
           {monthlyPayment !== undefined && (
             <p className="text-sm text-muted-foreground mt-1">
               {formatCurrency(monthlyPayment, currency)}/month
+            </p>
+          )}
+          {endYear !== undefined && endYear > 0 && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Ends in {endYear}
             </p>
           )}
         </div>

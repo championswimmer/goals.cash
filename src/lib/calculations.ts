@@ -33,7 +33,8 @@ export function calculateProjections(
 
     incomes.forEach((income) => {
       const yearsActive = year - income.startYear
-      if (yearsActive >= 0) {
+      const isActive = yearsActive >= 0 && (!income.endYear || year < income.endYear)
+      if (isActive) {
         const amount = income.annualAmount * Math.pow(1 + income.growthRate / 100, yearsActive)
         incomeBreakdown[income.id] = amount
         totalIncome += amount

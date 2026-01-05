@@ -78,6 +78,7 @@ export function DataSidebar({
   const [newIncomeName, setNewIncomeName] = useState('')
   const [newIncomeAmount, setNewIncomeAmount] = useState('')
   const [newIncomeGrowth, setNewIncomeGrowth] = useState('3')
+  const [newIncomeEndYear, setNewIncomeEndYear] = useState('')
 
   const [newExpenseName, setNewExpenseName] = useState('')
   const [newExpenseAmount, setNewExpenseAmount] = useState('')
@@ -122,6 +123,7 @@ export function DataSidebar({
   const handleAddIncome = () => {
     const amount = parseFloat(newIncomeAmount)
     const growth = parseFloat(newIncomeGrowth)
+    const endYear = newIncomeEndYear ? parseFloat(newIncomeEndYear) : undefined
     if (newIncomeName && !isNaN(amount)) {
       onAddIncome({
         id: generateId(),
@@ -129,10 +131,12 @@ export function DataSidebar({
         annualAmount: amount,
         growthRate: growth,
         startYear: profile.startYear,
+        endYear: endYear,
       })
       setNewIncomeName('')
       setNewIncomeAmount('')
       setNewIncomeGrowth('3')
+      setNewIncomeEndYear('')
       setAddingIncome(false)
     }
   }
@@ -180,11 +184,15 @@ export function DataSidebar({
                     amount={income.annualAmount}
                     growthRate={income.growthRate}
                     currency={profile.currency}
+                    endYear={income.endYear}
+                    profileAge={profile.currentAge}
+                    profileHorizonAge={profile.planningHorizonAge}
                     onEdit={(updates) =>
                       onUpdateIncome(income.id, {
                         name: updates.name,
                         annualAmount: updates.amount,
                         growthRate: updates.growthRate,
+                        endYear: updates.endYear,
                       })
                     }
                     onDelete={() => onDeleteIncome(income.id)}
@@ -229,6 +237,19 @@ export function DataSidebar({
                         max={20}
                         step={0.5}
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>End Year (Optional)</Label>
+                      <Input
+                        type="number"
+                        value={newIncomeEndYear}
+                        onChange={(e) => setNewIncomeEndYear(e.target.value)}
+                        placeholder={`Leave empty for full horizon (age ${profile.planningHorizonAge})`}
+                        min={profile.startYear}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Income will stop in this year (e.g., retirement at age 60)
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Button onClick={handleAddIncome} className="flex-1">
