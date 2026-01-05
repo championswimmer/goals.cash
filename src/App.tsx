@@ -107,6 +107,28 @@ function App() {
     toast.success('Goal added to your plan!')
   }
 
+  const handleUpdateGoal = (id: string, updates: Partial<Goal>) => {
+    setGoals((current) => (current || []).map((g) => (g.id === id ? { ...g, ...updates } : g)))
+    toast.success('Goal updated')
+  }
+
+  const handleDeleteGoal = (id: string) => {
+    setGoals((current) => (current || []).filter((g) => g.id !== id))
+    toast.success('Goal deleted')
+  }
+
+  useEffect(() => {
+    if (profile && (goals?.length || 0) === 0 && projections.length > 0 && !showGoalDialog) {
+      const hasData = (assets?.length || 0) + (liabilities?.length || 0) + (incomes?.length || 0) + (expenses?.length || 0) > 0
+      if (hasData) {
+        const timer = setTimeout(() => {
+          setShowGoalDialog(true)
+        }, 1500)
+        return () => clearTimeout(timer)
+      }
+    }
+  }, [profile, goals?.length, projections.length, assets, liabilities, incomes, expenses, showGoalDialog])
+
   if (!profile) {
     return (
       <>
@@ -185,6 +207,7 @@ function App() {
         liabilities={liabilities || []}
         incomes={incomes || []}
         expenses={expenses || []}
+        goals={goals || []}
         onUpdateAsset={handleUpdateAsset}
         onDeleteAsset={handleDeleteAsset}
         onAddAsset={handleAddAsset}
@@ -197,6 +220,8 @@ function App() {
         onUpdateExpense={handleUpdateExpense}
         onDeleteExpense={handleDeleteExpense}
         onAddExpense={handleAddExpense}
+        onUpdateGoal={handleUpdateGoal}
+        onDeleteGoal={handleDeleteGoal}
       />
 
       <AddGoalDialog

@@ -9,7 +9,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Plus } from '@phosphor-icons/react'
 import { EditableItemCard } from './EditableItemCard'
-import type { Asset, Liability, Income, Expense, UserProfile } from '@/lib/types'
+import { EditableGoalCard } from './EditableGoalCard'
+import type { Asset, Liability, Income, Expense, Goal, UserProfile } from '@/lib/types'
 import { generateId } from '@/lib/calculations'
 
 interface DataSidebarProps {
@@ -20,6 +21,7 @@ interface DataSidebarProps {
   liabilities: Liability[]
   incomes: Income[]
   expenses: Expense[]
+  goals: Goal[]
   onUpdateAsset: (id: string, updates: Partial<Asset>) => void
   onDeleteAsset: (id: string) => void
   onAddAsset: (asset: Asset) => void
@@ -32,6 +34,8 @@ interface DataSidebarProps {
   onUpdateExpense: (id: string, updates: Partial<Expense>) => void
   onDeleteExpense: (id: string) => void
   onAddExpense: (expense: Expense) => void
+  onUpdateGoal: (id: string, updates: Partial<Goal>) => void
+  onDeleteGoal: (id: string) => void
 }
 
 export function DataSidebar({
@@ -42,6 +46,7 @@ export function DataSidebar({
   liabilities,
   incomes,
   expenses,
+  goals,
   onUpdateAsset,
   onDeleteAsset,
   onAddAsset,
@@ -54,6 +59,8 @@ export function DataSidebar({
   onUpdateExpense,
   onDeleteExpense,
   onAddExpense,
+  onUpdateGoal,
+  onDeleteGoal,
 }: DataSidebarProps) {
   const [addingAsset, setAddingAsset] = useState(false)
   const [addingLiability, setAddingLiability] = useState(false)
@@ -155,11 +162,12 @@ export function DataSidebar({
           <SheetTitle className="text-2xl font-semibold">Financial Data</SheetTitle>
         </SheetHeader>
         <Tabs defaultValue="income" className="mt-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5 text-xs">
             <TabsTrigger value="income">Income</TabsTrigger>
             <TabsTrigger value="expenses">Expenses</TabsTrigger>
             <TabsTrigger value="assets">Assets</TabsTrigger>
             <TabsTrigger value="liabilities">Debts</TabsTrigger>
+            <TabsTrigger value="goals">Goals</TabsTrigger>
           </TabsList>
 
           <TabsContent value="income" className="mt-6">
@@ -508,6 +516,29 @@ export function DataSidebar({
                   <Plus className="mr-2" size={16} />
                   Add Liability
                 </Button>
+              </div>
+            </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="goals" className="mt-6">
+            <ScrollArea className="h-[calc(100vh-240px)]">
+              <div className="space-y-4 pr-4">
+                {goals.map((goal) => (
+                  <EditableGoalCard
+                    key={goal.id}
+                    goal={goal}
+                    profile={profile}
+                    onEdit={(updates) => onUpdateGoal(goal.id, updates)}
+                    onDelete={() => onDeleteGoal(goal.id)}
+                  />
+                ))}
+
+                {goals.length === 0 && (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <p>No goals yet.</p>
+                    <p className="text-sm mt-1">Add financial goals to see them on your chart.</p>
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </TabsContent>

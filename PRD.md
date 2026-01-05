@@ -55,11 +55,11 @@ This is a sophisticated financial modeling tool with multiple interconnected dat
 - **Success criteria**: Charts accurately reflect projections, support hover tooltips, and toggle between expense visualization modes
 
 ### Goal Planning
-- **Functionality**: Add financial goals as one-time purchases, recurring expenses, or liabilities (with loans)
+- **Functionality**: Add and edit financial goals as one-time purchases, recurring expenses, or liabilities (with loans)
 - **Purpose**: Model major life events and their financial impact
-- **Trigger**: Add Goal button on main interface
-- **Progression**: Click Add Goal → Select type (one-time/recurring) → Enter details (amount, year, loan terms if applicable) → Save → Goal appears as point on chart with projected impact
-- **Success criteria**: Goals modify projections appropriately (one-time reduces assets, recurring adds expenses, loans add liabilities)
+- **Trigger**: Add Goal button on main interface, or edit existing goals in Manage Data sidebar
+- **Progression**: Click Add Goal → Select type (one-time/recurring) → Enter details (amount, year, loan terms if applicable) → Save → Goal appears as point on chart with projected impact. Edit goals via Manage Data sidebar → Goals tab → Click edit on any goal
+- **Success criteria**: Goals modify projections appropriately (one-time reduces assets, recurring adds expenses, loans add liabilities). Goals can be edited and deleted after creation.
 
 ### Interactive Editing
 - **Functionality**: Adjust growth rates and amounts via sliders and inputs
@@ -120,9 +120,9 @@ The design should evoke **confidence, precision, and clarity** - like a professi
 ## Component Selection
 
 - **Components**:
-  - **Dialog**: Profile setup modal for initial configuration
-  - **Tabs**: Sidebar navigation between Income/Expenses/Assets/Liabilities sections
-  - **Card**: Container for individual income/expense/asset/liability items with edit controls
+  - **Dialog**: Profile setup modal and Add Goal dialog for creating new goals
+  - **Tabs**: Sidebar navigation between Income/Expenses/Assets/Liabilities/Goals sections
+  - **Card**: Container for individual income/expense/asset/liability/goal items with edit controls
   - **Slider**: Primary control for adjusting growth rates (visual, immediate feedback)
   - **Input**: Precise numerical entry for amounts and percentages
   - **Button**: Primary (Add Goal, Save), Secondary (Add Income/Expense/Asset), Destructive (Delete items)
@@ -131,13 +131,15 @@ The design should evoke **confidence, precision, and clarity** - like a professi
   - **Separator**: Visual division between sidebar sections
   - **Badge**: Display growth rates and status indicators
   - **ScrollArea**: Scrollable lists within sidebar tabs
-  - **Select**: Currency selection, goal type selection
+  - **Select**: Currency selection, goal type selection, year selection for goals
+  - **RadioGroup**: Goal type selection (one-time vs recurring, with loan vs without loan)
   
 - **Customizations**:
   - **Chart Container**: Custom D3/Recharts integration with dual-axis support (bars + area chart overlaid)
   - **Goal Markers**: Custom SVG circles with hover states positioned on timeline
   - **Toggle Button**: Custom expense view toggle (negative vs same-side bars)
   - **Editable Card**: Custom component combining Card + Slider + Input with inline editing
+  - **Editable Goal Card**: Custom component for editing goals with conditional fields based on goal type (one-time, recurring, with/without loan)
   
 - **States**:
   - Buttons: Subtle shadow on hover, slight scale on press (0.98), disabled shows muted colors
