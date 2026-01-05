@@ -133,7 +133,7 @@ export function EditableItemCard({
                 />
                 <p className="text-xs text-muted-foreground">
                   {parseFloat(editRisk) === 0 ? 'No risk: growth is constant' : 
-                   `Growth varies from ${(parseFloat(editGrowthRate) - (parseFloat(editGrowthRate) * parseFloat(editRisk))).toFixed(1)}% to ${(parseFloat(editGrowthRate) + (2 * parseFloat(editGrowthRate) * parseFloat(editRisk))).toFixed(1)}% annually`}
+                   `Growth varies from ${(-parseFloat(editGrowthRate) * parseFloat(editRisk)).toFixed(1)}% to ${(2 * parseFloat(editGrowthRate) * parseFloat(editRisk)).toFixed(1)}% annually`}
                 </p>
               </div>
             )}
