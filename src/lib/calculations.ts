@@ -199,3 +199,137 @@ export function formatCurrency(amount: number, currency: string): string {
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 }
+
+export interface LoanCalculationParams {
+  totalAmount: number
+  downPayment: number
+  annualPayment?: number
+  years?: number
+  interestRate?: number
+}
+
+export interface LoanCalculationResult {
+  downPayment: number
+  annualPayment: number
+  years: number
+  interestRate: number
+  loanPrincipal: number
+}
+
+export function calculateLoanParameters(params: LoanCalculationParams): LoanCalculationResult | null {
+  const { totalAmount, downPayment } = params
+  
+  if (totalAmount <= 0 || downPayment < 0 || downPayment >= totalAmount) {
+    return null
+  }
+  
+  const loanPrincipal = totalAmount - downPayment
+  
+  if (params.annualPayment && params.years) {
+    const P = loanPrincipal
+    const A = params.annualPayment
+    const n = params.years
+    
+    if (A <= 0 || n <= 0 || A * n < P) {
+      return null
+    }
+    
+    let r = 0.05
+    const maxIterations = 100
+    const tolerance = 0.0001
+    
+    for (let i = 0; i < maxIterations; i++) {
+      const presentValue = r === 0 ? A * n : A * ((1 - Math.pow(1 + r, -n)) / r)
+      const derivative = r === 0 ? 0 : A * (n * Math.pow(1 + r, -n - 1) / r - (1 - Math.pow(1 + r, -n)) / (r * r))
+      
+      if (Math.abs(presentValue - P) < tolerance) {
+        return {
+          downPayment,
+          annualPayment: A,
+          years: n,
+          interestRate: parseFloat((r * 100).toFixed(2)),
+          loanPrincipal,
+        }
+      }
+      
+      if (derivative !== 0) {
+        r = r - (presentValue - P) / derivative
+      } else {
+        r = (A * n - P) / (P * n / 2)
+      }
+      
+      r = Math.max(0, Math.min(r, 0.5))
+    }
+    
+    return {
+      downPayment,
+      annualPayment: A,
+      years: n,
+      interestRate: parseFloat((r * 100).toFixed(2)),
+      loanPrincipal,
+    }
+  }
+  
+  if (params.annualPayment && params.interestRate !== undefined) {
+    const A = params.annualPayment
+    const r = params.interestRate / 100
+    const P = loanPrincipal
+    
+    if (A <= 0 || r < 0) {
+      return null
+    }
+    
+    let years: number
+    if (r === 0) {
+      years = P / A
+    } else {
+      if (A <= P * r) {
+        return null
+      }
+      years = -Math.log(1 - (P * r) / A) / Math.log(1 + r)
+    }
+    
+    if (!isFinite(years) || years <= 0) {
+      return null
+    }
+    
+    return {
+      downPayment,
+      annualPayment: A,
+      years: Math.ceil(years),
+      interestRate: params.interestRate,
+      loanPrincipal,
+    }
+  }
+  
+  if (params.years && params.interestRate !== undefined) {
+    const n = params.years
+    const r = params.interestRate / 100
+    const P = loanPrincipal
+    
+    if (n <= 0 || r < 0) {
+      return null
+    }
+    
+    let annualPayment: number
+    if (r === 0) {
+      annualPayment = P / n
+    } else {
+      annualPayment = (P * r) / (1 - Math.pow(1 + r, -n))
+    }
+    
+    if (!isFinite(annualPayment) || annualPayment <= 0) {
+      return null
+    }
+    
+    return {
+      downPayment,
+      annualPayment: parseFloat(annualPayment.toFixed(2)),
+      years: n,
+      interestRate: params.interestRate,
+      loanPrincipal,
+    }
+  }
+  
+  return null
+}

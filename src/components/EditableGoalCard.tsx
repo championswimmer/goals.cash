@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { PencilSimple, Trash, Check, X } from '@phosphor-icons/react'
-import { formatCurrency } from '@/lib/calculations'
+import { formatCurrency, calculateLoanParameters } from '@/lib/calculations'
 import type { Goal, UserProfile } from '@/lib/types'
 
 interface EditableGoalCardProps {
@@ -33,6 +33,8 @@ export function EditableGoalCard({ goal, profile, onEdit, onDelete }: EditableGo
   const [interestRate, setInterestRate] = useState(goal.loanDetails?.interestRate?.toString() || '')
   const [growthRate, setGrowthRate] = useState(goal.recurringDetails?.growthRate?.toString() || '0')
   const [endYear, setEndYear] = useState(goal.recurringDetails?.endYear?.toString() || '')
+  const [lastEditedLoanField, setLastEditedLoanField] = useState<'down' | 'annual' | 'years' | 'interest' | null>(null)
+  const isCalculating = useRef(false)
 
   const handleSave = () => {
     const amountNum = parseFloat(amount)
@@ -100,8 +102,103 @@ export function EditableGoalCard({ goal, profile, onEdit, onDelete }: EditableGo
     setInterestRate(goal.loanDetails?.interestRate?.toString() || '')
     setGrowthRate(goal.recurringDetails?.growthRate?.toString() || '0')
     setEndYear(goal.recurringDetails?.endYear?.toString() || '')
+    setLastEditedLoanField(null)
     setEditing(false)
   }
+
+  useEffect(() => {
+    if (isCalculating.current || loanType !== 'with-loan' || !editing) return
+
+    const totalAmount = parseFloat(amount)
+    const down = parseFloat(downPayment)
+    const annual = parseFloat(annualPayment)
+    const years = parseInt(loanYears)
+    const interest = parseFloat(interestRate)
+
+    if (isNaN(totalAmount) || totalAmount <= 0) return
+    if (isNaN(down) || down < 0 || down >= totalAmount) return
+
+    let result: ReturnType<typeof calculateLoanParameters> = null
+
+    if (lastEditedLoanField === 'down' || lastEditedLoanField === 'annual') {
+      if (!isNaN(annual) && annual > 0 && !isNaN(years) && years > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          years,
+        })
+      } else if (!isNaN(annual) && annual > 0 && !isNaN(interest) && interest >= 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          interestRate: interest,
+        })
+      } else if (!isNaN(years) && years > 0 && !isNaN(interest) && interest >= 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          years,
+          interestRate: interest,
+        })
+      }
+    } else if (lastEditedLoanField === 'years') {
+      if (!isNaN(years) && years > 0 && !isNaN(interest) && interest >= 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          years,
+          interestRate: interest,
+        })
+      } else if (!isNaN(years) && years > 0 && !isNaN(annual) && annual > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          years,
+        })
+      }
+    } else if (lastEditedLoanField === 'interest') {
+      if (!isNaN(interest) && interest >= 0 && !isNaN(years) && years > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          years,
+          interestRate: interest,
+        })
+      } else if (!isNaN(interest) && interest >= 0 && !isNaN(annual) && annual > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          interestRate: interest,
+        })
+      }
+    }
+
+    if (result) {
+      isCalculating.current = true
+      
+      if (lastEditedLoanField === 'down' || lastEditedLoanField === 'annual') {
+        if (!isNaN(annual) && annual > 0 && !isNaN(years) && years > 0) {
+          setInterestRate(result.interestRate.toString())
+        } else if (!isNaN(annual) && annual > 0 && !isNaN(interest) && interest >= 0) {
+          setLoanYears(result.years.toString())
+        } else if (!isNaN(years) && years > 0 && !isNaN(interest) && interest >= 0) {
+          setAnnualPayment(result.annualPayment.toString())
+        }
+      } else if (lastEditedLoanField === 'years') {
+        setAnnualPayment(result.annualPayment.toString())
+      } else if (lastEditedLoanField === 'interest') {
+        setAnnualPayment(result.annualPayment.toString())
+      }
+      
+      setTimeout(() => {
+        isCalculating.current = false
+      }, 0)
+    }
+  }, [amount, downPayment, annualPayment, loanYears, interestRate, loanType, lastEditedLoanField, editing])
 
   const yearOptions: Array<{ year: number; age: number }> = []
   for (let i = 0; i <= profile.planningHorizonAge - profile.currentAge; i++) {
@@ -248,7 +345,10 @@ export function EditableGoalCard({ goal, profile, onEdit, onDelete }: EditableGo
                     id={`down-${goal.id}`}
                     type="number"
                     value={downPayment}
-                    onChange={(e) => setDownPayment(e.target.value)}
+                    onChange={(e) => {
+                      setDownPayment(e.target.value)
+                      setLastEditedLoanField('down')
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -257,7 +357,10 @@ export function EditableGoalCard({ goal, profile, onEdit, onDelete }: EditableGo
                     id={`annual-${goal.id}`}
                     type="number"
                     value={annualPayment}
-                    onChange={(e) => setAnnualPayment(e.target.value)}
+                    onChange={(e) => {
+                      setAnnualPayment(e.target.value)
+                      setLastEditedLoanField('annual')
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -266,7 +369,10 @@ export function EditableGoalCard({ goal, profile, onEdit, onDelete }: EditableGo
                     id={`years-${goal.id}`}
                     type="number"
                     value={loanYears}
-                    onChange={(e) => setLoanYears(e.target.value)}
+                    onChange={(e) => {
+                      setLoanYears(e.target.value)
+                      setLastEditedLoanField('years')
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -275,7 +381,10 @@ export function EditableGoalCard({ goal, profile, onEdit, onDelete }: EditableGo
                     id={`interest-${goal.id}`}
                     type="number"
                     value={interestRate}
-                    onChange={(e) => setInterestRate(e.target.value)}
+                    onChange={(e) => {
+                      setInterestRate(e.target.value)
+                      setLastEditedLoanField('interest')
+                    }}
                     step="0.1"
                   />
                 </div>

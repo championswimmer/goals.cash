@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type { Goal, GoalType, UserProfile } from '@/lib/types'
-import { generateId } from '@/lib/calculations'
+import { generateId, calculateLoanParameters } from '@/lib/calculations'
 
 interface AddGoalDialogProps {
   open: boolean
@@ -33,6 +33,8 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
   const [interestRate, setInterestRate] = useState('')
   const [growthRate, setGrowthRate] = useState('')
   const [endYear, setEndYear] = useState('')
+  const [lastEditedLoanField, setLastEditedLoanField] = useState<'down' | 'annual' | 'years' | 'interest' | null>(null)
+  const isCalculating = useRef(false)
 
   const handleReset = () => {
     setGoalType('one-time')
@@ -46,7 +48,102 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
     setInterestRate('')
     setGrowthRate('')
     setEndYear('')
+    setLastEditedLoanField(null)
   }
+
+  useEffect(() => {
+    if (isCalculating.current || loanType !== 'with-loan') return
+
+    const totalAmount = parseFloat(amount)
+    const down = parseFloat(downPayment)
+    const annual = parseFloat(annualPayment)
+    const years = parseInt(loanYears)
+    const interest = parseFloat(interestRate)
+
+    if (isNaN(totalAmount) || totalAmount <= 0) return
+    if (isNaN(down) || down < 0 || down >= totalAmount) return
+
+    let result: ReturnType<typeof calculateLoanParameters> = null
+
+    if (lastEditedLoanField === 'down' || lastEditedLoanField === 'annual') {
+      if (!isNaN(annual) && annual > 0 && !isNaN(years) && years > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          years,
+        })
+      } else if (!isNaN(annual) && annual > 0 && !isNaN(interest) && interest >= 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          interestRate: interest,
+        })
+      } else if (!isNaN(years) && years > 0 && !isNaN(interest) && interest >= 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          years,
+          interestRate: interest,
+        })
+      }
+    } else if (lastEditedLoanField === 'years') {
+      if (!isNaN(years) && years > 0 && !isNaN(interest) && interest >= 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          years,
+          interestRate: interest,
+        })
+      } else if (!isNaN(years) && years > 0 && !isNaN(annual) && annual > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          years,
+        })
+      }
+    } else if (lastEditedLoanField === 'interest') {
+      if (!isNaN(interest) && interest >= 0 && !isNaN(years) && years > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          years,
+          interestRate: interest,
+        })
+      } else if (!isNaN(interest) && interest >= 0 && !isNaN(annual) && annual > 0) {
+        result = calculateLoanParameters({
+          totalAmount,
+          downPayment: down,
+          annualPayment: annual,
+          interestRate: interest,
+        })
+      }
+    }
+
+    if (result) {
+      isCalculating.current = true
+      
+      if (lastEditedLoanField === 'down' || lastEditedLoanField === 'annual') {
+        if (!isNaN(annual) && annual > 0 && !isNaN(years) && years > 0) {
+          setInterestRate(result.interestRate.toString())
+        } else if (!isNaN(annual) && annual > 0 && !isNaN(interest) && interest >= 0) {
+          setLoanYears(result.years.toString())
+        } else if (!isNaN(years) && years > 0 && !isNaN(interest) && interest >= 0) {
+          setAnnualPayment(result.annualPayment.toString())
+        }
+      } else if (lastEditedLoanField === 'years') {
+        setAnnualPayment(result.annualPayment.toString())
+      } else if (lastEditedLoanField === 'interest') {
+        setAnnualPayment(result.annualPayment.toString())
+      }
+      
+      setTimeout(() => {
+        isCalculating.current = false
+      }, 0)
+    }
+  }, [amount, downPayment, annualPayment, loanYears, interestRate, loanType, lastEditedLoanField])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -218,7 +315,10 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
                     id="down-payment"
                     type="number"
                     value={downPayment}
-                    onChange={(e) => setDownPayment(e.target.value)}
+                    onChange={(e) => {
+                      setDownPayment(e.target.value)
+                      setLastEditedLoanField('down')
+                    }}
                     placeholder="10000"
                     required
                   />
@@ -229,7 +329,10 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
                     id="annual-payment"
                     type="number"
                     value={annualPayment}
-                    onChange={(e) => setAnnualPayment(e.target.value)}
+                    onChange={(e) => {
+                      setAnnualPayment(e.target.value)
+                      setLastEditedLoanField('annual')
+                    }}
                     placeholder="5000"
                     required
                   />
@@ -240,7 +343,10 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
                     id="loan-years"
                     type="number"
                     value={loanYears}
-                    onChange={(e) => setLoanYears(e.target.value)}
+                    onChange={(e) => {
+                      setLoanYears(e.target.value)
+                      setLastEditedLoanField('years')
+                    }}
                     placeholder="10"
                     required
                   />
@@ -251,7 +357,10 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
                     id="interest-rate"
                     type="number"
                     value={interestRate}
-                    onChange={(e) => setInterestRate(e.target.value)}
+                    onChange={(e) => {
+                      setInterestRate(e.target.value)
+                      setLastEditedLoanField('interest')
+                    }}
                     placeholder="3.5"
                     step="0.1"
                     required
