@@ -54,7 +54,7 @@ export function EditableItemCard({
         name: editName,
         amount: amountNum,
         growthRate: growthRate !== undefined ? growthNum : undefined,
-        endYear: endYear !== undefined ? endYearNum : undefined,
+        endYear: endYearNum,
       })
       if (monthlyPayment !== undefined && onEditMonthlyPayment && !isNaN(monthlyNum)) {
         onEditMonthlyPayment(monthlyNum)
@@ -123,7 +123,7 @@ export function EditableItemCard({
           </div>
         )}
 
-        {endYear !== undefined && profileAge !== undefined && profileHorizonAge !== undefined && profileStartYear !== undefined && (
+        {profileAge !== undefined && profileHorizonAge !== undefined && profileStartYear !== undefined && (
           <div className="space-y-2">
             <Label>End Year (Optional)</Label>
             <Input
