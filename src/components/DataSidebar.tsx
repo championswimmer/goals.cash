@@ -187,6 +187,7 @@ export function DataSidebar({
                     endYear={income.endYear}
                     profileAge={profile.currentAge}
                     profileHorizonAge={profile.planningHorizonAge}
+                    profileStartYear={profile.startYear}
                     onEdit={(updates) =>
                       onUpdateIncome(income.id, {
                         name: updates.name,
@@ -247,8 +248,13 @@ export function DataSidebar({
                         placeholder={`Leave empty for full horizon (age ${profile.planningHorizonAge})`}
                         min={profile.startYear}
                       />
+                      {newIncomeEndYear && !isNaN(parseFloat(newIncomeEndYear)) && (
+                        <p className="text-xs text-accent font-medium">
+                          Income ends at age {profile.currentAge + (parseFloat(newIncomeEndYear) - profile.startYear)} (Year {parseFloat(newIncomeEndYear)})
+                        </p>
+                      )}
                       <p className="text-xs text-muted-foreground">
-                        Income will stop in this year (e.g., retirement at age 60)
+                        Last year this income will be received (e.g., retirement)
                       </p>
                     </div>
                     <div className="flex gap-2">

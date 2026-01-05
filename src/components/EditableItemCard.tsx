@@ -19,6 +19,7 @@ interface EditableItemCardProps {
   endYear?: number
   profileAge?: number
   profileHorizonAge?: number
+  profileStartYear?: number
 }
 
 export function EditableItemCard({
@@ -33,6 +34,7 @@ export function EditableItemCard({
   endYear,
   profileAge,
   profileHorizonAge,
+  profileStartYear,
 }: EditableItemCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState(name)
@@ -121,7 +123,7 @@ export function EditableItemCard({
           </div>
         )}
 
-        {endYear !== undefined && profileAge !== undefined && profileHorizonAge !== undefined && (
+        {endYear !== undefined && profileAge !== undefined && profileHorizonAge !== undefined && profileStartYear !== undefined && (
           <div className="space-y-2">
             <Label>End Year (Optional)</Label>
             <Input
@@ -129,10 +131,15 @@ export function EditableItemCard({
               value={editEndYear}
               onChange={(e) => setEditEndYear(e.target.value)}
               placeholder={`Leave empty for full horizon (age ${profileHorizonAge})`}
-              min={new Date().getFullYear()}
+              min={profileStartYear}
             />
+            {editEndYear && !isNaN(parseFloat(editEndYear)) && (
+              <p className="text-xs text-accent font-medium">
+                Income ends at age {profileAge + (parseFloat(editEndYear) - profileStartYear)} (Year {parseFloat(editEndYear)})
+              </p>
+            )}
             <p className="text-xs text-muted-foreground">
-              Income will stop in this year (e.g., retirement at age 60)
+              Last year this income will be received (e.g., retirement)
             </p>
           </div>
         )}
@@ -170,9 +177,9 @@ export function EditableItemCard({
               {formatCurrency(monthlyPayment, currency)}/month
             </p>
           )}
-          {endYear !== undefined && endYear > 0 && (
+          {endYear !== undefined && endYear > 0 && profileAge !== undefined && profileStartYear !== undefined && (
             <p className="text-sm text-muted-foreground mt-1">
-              Ends in {endYear}
+              Ends in {endYear} (age {profileAge + (endYear - profileStartYear)})
             </p>
           )}
         </div>
