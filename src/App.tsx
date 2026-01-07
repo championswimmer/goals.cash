@@ -154,18 +154,6 @@ function App() {
     toast.success('Data imported successfully')
   }
 
-  useEffect(() => {
-    if (profile && (goals?.length || 0) === 0 && projections.length > 0 && !showGoalDialog) {
-      const hasData = (assets?.length || 0) + (liabilities?.length || 0) + (incomes?.length || 0) + (expenses?.length || 0) > 0
-      if (hasData) {
-        const timer = setTimeout(() => {
-          setShowGoalDialog(true)
-        }, 1500)
-        return () => clearTimeout(timer)
-      }
-    }
-  }, [profile, goals?.length, projections.length, assets, liabilities, incomes, expenses, showGoalDialog])
-
   if (!profile) {
     return (
       <>
