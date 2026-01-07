@@ -190,7 +190,7 @@ export function DataSidebar({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:w-[500px] sm:max-w-[500px]">
-        <SheetHeader className="flex flex-row items-center justify-between">
+        <SheetHeader className="flex flex-row items-center justify-between pr-8">
           <SheetTitle className="text-2xl font-semibold">Financial Data</SheetTitle>
           <Button variant="outline" size="sm" onClick={handleExportData}>
             <DownloadSimple className="mr-2" size={16} />
