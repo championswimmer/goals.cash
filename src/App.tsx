@@ -9,6 +9,7 @@ import { AddGoalDialog } from '@/components/AddGoalDialog'
 import { FinancialChart } from '@/components/FinancialChart'
 import { TutorialDialog } from '@/components/TutorialDialog'
 import { calculateProjections, formatCurrency } from '@/lib/calculations'
+import { setAnalyticsCurrency } from '@/lib/analytics'
 import type { UserProfile, Asset, Liability, Income, Expense, Goal } from '@/lib/types'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
@@ -26,6 +27,12 @@ function App() {
   const [showDataSidebar, setShowDataSidebar] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
   const [showTutorialDialog, setShowTutorialDialog] = useState(false)
+
+  useEffect(() => {
+    if (profile?.currency) {
+      setAnalyticsCurrency(profile.currency)
+    }
+  }, [profile])
 
   useEffect(() => {
     if (!profile) {

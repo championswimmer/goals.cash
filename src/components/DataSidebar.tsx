@@ -23,6 +23,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
+import { trackAddAsset, trackAddLiability, trackAddIncome, trackAddExpense } from '@/lib/analytics'
+
 interface DataSidebarProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -178,14 +180,16 @@ export function DataSidebar({
     const growth = parseFloat(newAssetGrowth)
     const risk = parseFloat(newAssetRisk)
     if (newAssetName && !isNaN(value)) {
-      onAddAsset({
+      const asset: Asset = {
         id: generateId(),
         name: newAssetName,
         currentValue: value,
         growthRate: growth,
         startYear: profile.startYear,
         risk: risk,
-      })
+      }
+      onAddAsset(asset)
+      trackAddAsset(asset)
       setNewAssetName('')
       setNewAssetValue('')
       setNewAssetGrowth('5')
@@ -198,13 +202,15 @@ export function DataSidebar({
     const balance = parseFloat(newLiabilityBalance)
     const payment = parseFloat(newLiabilityPayment)
     if (newLiabilityName && !isNaN(balance) && !isNaN(payment)) {
-      onAddLiability({
+      const liability: Liability = {
         id: generateId(),
         name: newLiabilityName,
         remainingBalance: balance,
         monthlyPayment: payment,
         startYear: profile.startYear,
-      })
+      }
+      onAddLiability(liability)
+      trackAddLiability(liability)
       setNewLiabilityName('')
       setNewLiabilityBalance('')
       setNewLiabilityPayment('')
@@ -217,14 +223,16 @@ export function DataSidebar({
     const growth = parseFloat(newIncomeGrowth)
     const endYear = newIncomeEndYear ? parseFloat(newIncomeEndYear) : undefined
     if (newIncomeName && !isNaN(amount)) {
-      onAddIncome({
+      const income: Income = {
         id: generateId(),
         name: newIncomeName,
         annualAmount: amount,
         growthRate: growth,
         startYear: profile.startYear,
         endYear: endYear,
-      })
+      }
+      onAddIncome(income)
+      trackAddIncome(income)
       setNewIncomeName('')
       setNewIncomeAmount('')
       setNewIncomeGrowth('3')
@@ -237,13 +245,15 @@ export function DataSidebar({
     const amount = parseFloat(newExpenseAmount)
     const growth = parseFloat(newExpenseGrowth)
     if (newExpenseName && !isNaN(amount)) {
-      onAddExpense({
+      const expense: Expense = {
         id: generateId(),
         name: newExpenseName,
         annualAmount: amount,
         growthRate: growth,
         startYear: profile.startYear,
-      })
+      }
+      onAddExpense(expense)
+      trackAddExpense(expense)
       setNewExpenseName('')
       setNewExpenseAmount('')
       setNewExpenseGrowth('3')

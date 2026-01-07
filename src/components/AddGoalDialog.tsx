@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type { Goal, GoalType, UserProfile } from '@/lib/types'
 import { generateId, calculateLoanParameters } from '@/lib/calculations'
+import { trackAddGoal } from '@/lib/analytics'
 
 interface AddGoalDialogProps {
   open: boolean
@@ -208,6 +209,7 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
     }
 
     onAdd(goal)
+    trackAddGoal(goal)
     handleReset()
     onOpenChange(false)
   }
