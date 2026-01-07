@@ -137,6 +137,23 @@ function App() {
     toast.success('Goal deleted')
   }
 
+  const handleImportData = (data: {
+    profile: UserProfile
+    assets: Asset[]
+    liabilities: Liability[]
+    incomes: Income[]
+    expenses: Expense[]
+    goals: Goal[]
+  }) => {
+    setProfile(data.profile)
+    setAssets(data.assets)
+    setLiabilities(data.liabilities)
+    setIncomes(data.incomes)
+    setExpenses(data.expenses)
+    setGoals(data.goals)
+    toast.success('Data imported successfully')
+  }
+
   useEffect(() => {
     if (profile && (goals?.length || 0) === 0 && projections.length > 0 && !showGoalDialog) {
       const hasData = (assets?.length || 0) + (liabilities?.length || 0) + (incomes?.length || 0) + (expenses?.length || 0) > 0
@@ -256,6 +273,7 @@ function App() {
         onAddExpense={handleAddExpense}
         onUpdateGoal={handleUpdateGoal}
         onDeleteGoal={handleDeleteGoal}
+        onImportData={handleImportData}
       />
 
       <AddGoalDialog
