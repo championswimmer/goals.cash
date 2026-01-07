@@ -9,6 +9,7 @@ import { ErrorFallback } from './ErrorFallback.tsx'
 import "./main.css"
 import "./styles/theme.css"
 import "./index.css"
+import React from 'react';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
