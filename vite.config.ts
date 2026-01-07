@@ -1,6 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react-swc";
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig, PluginOption, searchForWorkspaceRoot } from "vite";
 
 import sparkPlugin from "@github/spark/spark-vite-plugin";
 import createIconImportProxy from "@github/spark/vitePhosphorIconProxyPlugin";
@@ -17,6 +17,13 @@ export default defineConfig({
     createIconImportProxy() as PluginOption,
     sparkPlugin() as PluginOption,
   ],
+  server: {
+    fs: {
+      allow: [
+        searchForWorkspaceRoot(projectRoot),
+      ],
+    },
+  },
   resolve: {
     alias: {
       '@': resolve(projectRoot, 'src')

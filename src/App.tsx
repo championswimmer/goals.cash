@@ -139,7 +139,11 @@ function App() {
   if (!profile) {
     return (
       <>
-        <ProfileSetupDialog open={showProfileDialog} onComplete={handleProfileComplete} />
+        <ProfileSetupDialog 
+          open={showProfileDialog} 
+          onOpenChange={() => {}}
+          onComplete={handleProfileComplete} 
+        />
         <Toaster />
       </>
     )
@@ -202,6 +206,7 @@ function App() {
 
       <ProfileSetupDialog
         open={showProfileDialog}
+        onOpenChange={setShowProfileDialog}
         onComplete={handleProfileComplete}
         initialProfile={profile}
       />

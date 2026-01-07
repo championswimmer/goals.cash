@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { UserProfile } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
 interface ProfileSetupDialogProps {
   open: boolean
+  onOpenChange?: (open: boolean) => void
   onComplete: (profile: UserProfile) => void
   initialProfile?: UserProfile
 }
@@ -23,13 +25,22 @@ const CURRENCIES = [
   { code: 'AUD', name: 'Australian Dollar' },
 ]
 
-export function ProfileSetupDialog({ open, onComplete, initialProfile }: ProfileSetupDialogProps) {
+export function ProfileSetupDialog({ open, onOpenChange, onComplete, initialProfile }: ProfileSetupDialogProps) {
   const [name, setName] = useState(initialProfile?.name || '')
   const [currentAge, setCurrentAge] = useState(initialProfile?.currentAge?.toString() || '')
   const [planningHorizonAge, setPlanningHorizonAge] = useState(
     initialProfile?.planningHorizonAge?.toString() || ''
   )
   const [currency, setCurrency] = useState(initialProfile?.currency || 'USD')
+
+  useEffect(() => {
+    if (open && initialProfile) {
+      setName(initialProfile.name || '')
+      setCurrentAge(initialProfile.currentAge?.toString() || '')
+      setPlanningHorizonAge(initialProfile.planningHorizonAge?.toString() || '')
+      setCurrency(initialProfile.currency || 'USD')
+    }
+  }, [open, initialProfile])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,8 +62,14 @@ export function ProfileSetupDialog({ open, onComplete, initialProfile }: Profile
   }
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-[500px]" onInteractOutside={(e) => e.preventDefault()}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent 
+        className={cn(
+          "sm:max-w-[500px]",
+          !initialProfile && "[&>button[data-slot=dialog-close]]:hidden"
+        )} 
+        onInteractOutside={(e) => (initialProfile ? undefined : e.preventDefault())}
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">Setup Your Financial Profile</DialogTitle>
         </DialogHeader>
