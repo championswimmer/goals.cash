@@ -25,6 +25,9 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build
+        env:
+          VITE_PUBLIC_POSTHOG_HOST: ${{ vars.VITE_PUBLIC_POSTHOG_HOST }}
+          VITE_PUBLIC_POSTHOG_KEY: ${{ vars.VITE_PUBLIC_POSTHOG_KEY }}
         run: bun run build
 
       - name: Deploy to GitHub Pages
