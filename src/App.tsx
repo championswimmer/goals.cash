@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { useKV } from '@github/spark/hooks'
+import { useLocalStorage } from '@/hooks/use-local-storage'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Target, List, User } from '@phosphor-icons/react'
@@ -13,12 +13,12 @@ import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 
 function App() {
-  const [profile, setProfile] = useKV<UserProfile | null>('user-profile', null)
-  const [assets, setAssets] = useKV<Asset[]>('assets', [])
-  const [liabilities, setLiabilities] = useKV<Liability[]>('liabilities', [])
-  const [incomes, setIncomes] = useKV<Income[]>('incomes', [])
-  const [expenses, setExpenses] = useKV<Expense[]>('expenses', [])
-  const [goals, setGoals] = useKV<Goal[]>('goals', [])
+  const [profile, setProfile] = useLocalStorage<UserProfile | null>('user-profile', null)
+  const [assets, setAssets] = useLocalStorage<Asset[]>('assets', [])
+  const [liabilities, setLiabilities] = useLocalStorage<Liability[]>('liabilities', [])
+  const [incomes, setIncomes] = useLocalStorage<Income[]>('incomes', [])
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', [])
+  const [goals, setGoals] = useLocalStorage<Goal[]>('goals', [])
 
   const [showProfileDialog, setShowProfileDialog] = useState(false)
   const [showDataSidebar, setShowDataSidebar] = useState(false)

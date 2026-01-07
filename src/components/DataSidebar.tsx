@@ -7,11 +7,12 @@ import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Plus } from '@phosphor-icons/react'
+import { Plus, DownloadSimple } from '@phosphor-icons/react'
 import { EditableItemCard } from './EditableItemCard'
 import { EditableGoalCard } from './EditableGoalCard'
 import type { Asset, Liability, Income, Expense, Goal, UserProfile } from '@/lib/types'
 import { generateId } from '@/lib/calculations'
+import { format } from 'date-fns'
 
 interface DataSidebarProps {
   open: boolean
@@ -84,6 +85,29 @@ export function DataSidebar({
   const [newExpenseName, setNewExpenseName] = useState('')
   const [newExpenseAmount, setNewExpenseAmount] = useState('')
   const [newExpenseGrowth, setNewExpenseGrowth] = useState('3')
+
+  const handleExportData = () => {
+    const data = {
+      profile,
+      assets,
+      liabilities,
+      incomes,
+      expenses,
+      goals,
+    }
+    const jsonString = JSON.stringify(data, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    
+    const timestamp = format(new Date(), 'yyyy-MM-dd-HHmm')
+    link.href = url
+    link.download = `goals-cash-${timestamp}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
   const handleAddAsset = () => {
     const value = parseFloat(newAssetValue)
@@ -166,8 +190,12 @@ export function DataSidebar({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:w-[500px] sm:max-w-[500px]">
-        <SheetHeader>
+        <SheetHeader className="flex flex-row items-center justify-between">
           <SheetTitle className="text-2xl font-semibold">Financial Data</SheetTitle>
+          <Button variant="outline" size="sm" onClick={handleExportData}>
+            <DownloadSimple className="mr-2" size={16} />
+            Export
+          </Button>
         </SheetHeader>
         <Tabs defaultValue="income" className="mt-6">
           <TabsList className="grid w-full grid-cols-5 text-xs">
