@@ -2,11 +2,12 @@ import { useState, useMemo, useEffect } from 'react'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Target, List, User } from '@phosphor-icons/react'
+import { Target, List, User, Question } from '@phosphor-icons/react'
 import { ProfileSetupDialog } from '@/components/ProfileSetupDialog'
 import { DataSidebar } from '@/components/DataSidebar'
 import { AddGoalDialog } from '@/components/AddGoalDialog'
 import { FinancialChart } from '@/components/FinancialChart'
+import { TutorialDialog } from '@/components/TutorialDialog'
 import { calculateProjections, formatCurrency } from '@/lib/calculations'
 import type { UserProfile, Asset, Liability, Income, Expense, Goal } from '@/lib/types'
 import { Toaster } from '@/components/ui/sonner'
@@ -14,6 +15,7 @@ import { toast } from 'sonner'
 
 function App() {
   const [profile, setProfile] = useLocalStorage<UserProfile | null>('user-profile', null)
+  const [tutorialCompleted, setTutorialCompleted] = useLocalStorage<boolean>('tutorial-completed', false)
   const [assets, setAssets] = useLocalStorage<Asset[]>('assets', [])
   const [liabilities, setLiabilities] = useLocalStorage<Liability[]>('liabilities', [])
   const [incomes, setIncomes] = useLocalStorage<Income[]>('incomes', [])
@@ -23,12 +25,15 @@ function App() {
   const [showProfileDialog, setShowProfileDialog] = useState(false)
   const [showDataSidebar, setShowDataSidebar] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
+  const [showTutorialDialog, setShowTutorialDialog] = useState(false)
 
   useEffect(() => {
     if (!profile) {
       setShowProfileDialog(true)
+    } else if (!tutorialCompleted) {
+      setShowTutorialDialog(true)
     }
-  }, [profile])
+  }, [profile, tutorialCompleted])
 
   const normalizedAssets = useMemo(() => {
     return (assets || []).map((asset) => ({
@@ -50,7 +55,15 @@ function App() {
   const handleProfileComplete = (newProfile: UserProfile) => {
     setProfile(newProfile)
     setShowProfileDialog(false)
+    if (!tutorialCompleted) {
+      setShowTutorialDialog(true)
+    }
     toast.success('Profile created successfully!')
+  }
+
+  const handleTutorialComplete = () => {
+    setTutorialCompleted(true)
+    setShowTutorialDialog(false)
   }
 
   const handleUpdateAsset = (id: string, updates: Partial<Asset>) => {
@@ -167,6 +180,9 @@ function App() {
                   {formatCurrency(currentNetWorth, profile.currency)}
                 </p>
               </Card>
+              <Button variant="ghost" size="icon" onClick={() => setShowTutorialDialog(true)} title="Help & Tutorial">
+                <Question size={20} />
+              </Button>
               <Button variant="outline" size="sm" onClick={() => setShowProfileDialog(true)}>
                 <User className="mr-2" size={16} />
                 Profile
@@ -209,6 +225,12 @@ function App() {
         onOpenChange={setShowProfileDialog}
         onComplete={handleProfileComplete}
         initialProfile={profile}
+      />
+
+      <TutorialDialog
+        open={showTutorialDialog}
+        onOpenChange={setShowTutorialDialog}
+        onComplete={handleTutorialComplete}
       />
 
       <DataSidebar
