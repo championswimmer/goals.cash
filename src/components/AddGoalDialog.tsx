@@ -193,7 +193,7 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
       }
     } else {
       const growthNum = parseFloat(growthRate) || 0
-      const endYearNum = endYear ? parseInt(endYear) : undefined
+      const endYearNum = endYear && endYear !== 'never' ? parseInt(endYear) : undefined
 
       goal = {
         id: generateId(),
@@ -394,7 +394,7 @@ export function AddGoalDialog({ open, onOpenChange, onAdd, profile }: AddGoalDia
                       <SelectValue placeholder="Never ends" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Never ends</SelectItem>
+                      <SelectItem value="never">Never ends</SelectItem>
                       {yearOptions
                         .filter((opt) => opt.year > parseInt(year || '0'))
                         .map((opt) => (
